@@ -1,0 +1,10 @@
+[general]
+name=LessonsPlugin
+description=Plugin for self-paced lessons an tutorials
+version=0.1
+qgisMinimumVersion=2.0
+author=Victor Olaya
+email=volaya@boundlessgeo.com
+website=www.boundlessgeo.com
+icon=lesson.gif
+class_name=LessonsPlugin
