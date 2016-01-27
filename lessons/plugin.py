@@ -19,9 +19,7 @@ class LessonsPlugin:
 	def unload(self):
 		self.iface.removePluginMenu(u"Lessons", self.action)
 		del self.action
-		if self.toolbar:
-			self.toolbar.setVisible(False)
-			del self.toolbar
+
 
 	def initGui(self):
 		lessonIcon = QtGui.QIcon(os.path.dirname(__file__) + '/lesson.gif')
