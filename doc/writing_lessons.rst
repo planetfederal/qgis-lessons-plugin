@@ -85,7 +85,7 @@ The addMenuClickStep() method in the ```Lesson```class will add step that involv
 Capturing QGIS interaction to create a lesson
 ----------------------------------------------
 
-The help files associated with a lesson contain text and usually screenshots. These has to be created manually, by creating the corresponding html and image files.
+The help files associated with a lesson contain text and usually screenshots. These have to be created manually, by creating the corresponding html and image files.
 
 An additional plugin is included in this repository, in the ```lessonscreator``` folder, aimed at users that plan to create their own lessons. It simplifies both writing text and creating screenshots, by capturing actions performed in QGIS. That is, the user performs the steps in the lesson to create, and the plugin tries to automatically create the corresponding lesson files.
 
@@ -107,7 +107,7 @@ The image will be added to the html corresponding to the current step, along wit
 
 All texts snippets and screenshots are added to the html file that describes the current step. A lesson might contain several steps. To start a new step and add text and screenshots to another file, press CTRL-W at anytime, and a new step will be started.
 
-When you have captured all elements of you lesson, select the *Plugins/Lessons/Stop catpturing lesson steps* menu.
+When you have captured all elements of you lesson, select the *Plugins/Lessons/Stop capturing lesson steps* menu.
 
 In the folder that you selected, you will find all html files and image files. You will also find a ```___init.py___``` file that describe the lesson. The folder as it is generated can be added to your lessons plugin (created based on the ```lessonscollectionplugin``` template) and will be recognised as a valid lesson.
 
