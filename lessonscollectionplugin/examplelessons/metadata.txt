@@ -1,0 +1,10 @@
+[general]
+name=Lessons
+description=Lessons
+version=0.1
+qgisMinimumVersion=2.0
+author=
+email=
+website=
+icon=
+class_name=LessonsCollection

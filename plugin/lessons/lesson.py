@@ -1,5 +1,6 @@
 import os
 from utils import openProject, unfoldMenu, menuFromName
+import traceback
 
 class Step():
 
@@ -15,8 +16,6 @@ class Step():
         self.endsignal = endsignal
         self.endsignalcheck = endsignalcheck
         self.steptype = steptype
-
-import traceback
 
 class Lesson():
 

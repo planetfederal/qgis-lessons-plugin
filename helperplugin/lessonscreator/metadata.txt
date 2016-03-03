@@ -1,0 +1,10 @@
+[general]
+name=LessonsCreator
+description=Tools to help create lessons for the Lessons plugin
+version=0.1
+qgisMinimumVersion=2.0
+author=Victor Olaya
+email=volayaf@gmail.com
+website=
+icon=edit.png
+class_name=LessonsCollection

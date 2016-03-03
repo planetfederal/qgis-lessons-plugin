@@ -83,6 +83,7 @@ def menuFromName(menuName):
             return menu, action
 
 def unfoldMenu(menu, action):
+    '''Unfolds a menu and all parent menus, and highlights an entry in that menu'''
     menus = []
     while isinstance(menu, QtGui.QMenu):
         menus.append(menu)

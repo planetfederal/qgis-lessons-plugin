@@ -6,7 +6,6 @@ from lessonwidget import LessonWidget
 from lessonselector import LessonSelector
 import os
 import lessons
-from examplelessons import exporttogeojson
 
 class LessonsPlugin:
 
@@ -14,7 +13,7 @@ class LessonsPlugin:
 		self.iface = iface
 		self.lessonWidget = None
 
-		lessons.addLessonModule(exporttogeojson)
+		#lessons.addLessonModule(exporttogeojson)
 
 	def unload(self):
 		self.iface.removePluginMenu(u"Lessons", self.action)
