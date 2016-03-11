@@ -98,11 +98,11 @@ From that moment, the plugin will be listening to your actions and documenting t
 
 - Whenever the focus changes to a new window, a screenshot of the window will be taken. An entry in the html file describing the current step will be added, which will include the screenshot.
 
-- Whenever the focus changes between two elements (but both of them having the same parent window/dialog), and the one that receives the focus is an input widget (text box, dropdown list, etc), a screenshot of the new element that receives the focus will be taken. The element that receives the focus will be highlighted using a red dashed rectangle, as shown in the image below
+- Whenever the focus changes between two elements (but both of them having the same parent window/dialog), and the one that receives the focus is an input widget (text box, dropdown list, etc), a screenshot of the new element that receives the focus will be taken. The element that receives the focus will be highlighted in the screenshot using a red dashed rectangle, as shown in the image below
 
-.. figure:: rectangle.png
+	.. figure:: rectangle.png
 
-The image will be added to the html corresponding to the current step, along with a text entry in the form "Click on [widget_name]"
+	The image will be added to the html corresponding to the current step, along with a text entry in the form "Click on [widget_name]"
 
 - When edit widgets lose focus or are modified, the plugin will try to capture the user action. For instance, for a dropdown list, when the current value is changed, the text "Select [new_value_text] in the [dropdown_name] dropdown list" is added. In the case of text boxes, the text "Enter [text] in the [textbox_name] textbox" is added.
 

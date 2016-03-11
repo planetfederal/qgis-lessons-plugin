@@ -152,10 +152,9 @@ class LessonsCreator:
 				newParent = self.getParentWindow(new)
 				print oldParent, newParent
 				if oldParent != newParent:
-					print "capturing", newParent, self.iScreenshot
 					self.createScreenshot(newParent)
 				elif isinstance(new, (QLineEdit, QTextEdit, QComboBox, QSpinBox, QRadioButton)):
-					text = "Select the '%s' widget" % (old.objectName())
+					text = "Select the '%s' widget" % (old.objectName() or str(old))
 					self.outputHtmlFile.write("<p>%s</p>\n" % text)
 					self.createScreenshot(new.parent(), new.frameGeometry())
 
