@@ -15,6 +15,7 @@ options(
         name = 'lessons',
         source_dir = path('lessons'),
         package_dir = path('.'),
+        tests = ['test'],
         excludes = [
             '*.pyc',
             '.git',
@@ -63,11 +64,16 @@ def install_devtools():
 
 
 @task
+@cmdopts([
+    ('tests', 't', 'Package tests with plugin'),
+])
 def package(options):
     """Create plugin package
     """
     package_file = options.plugin.package_dir / ('%s.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+        if not hasattr(options.package, 'tests'):
+            options.plugin.excludes.extend(options.plugin.tests)
         _make_zip(zf, options)
     return package_file
 
