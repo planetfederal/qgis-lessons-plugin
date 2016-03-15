@@ -22,6 +22,14 @@ class LessonsCollection:
 		for p in packages:
 			m = __import__(__name__.split(".")[0] + "._lessons." + p, fromlist="dummy")
 			addLessonModule(m)
+		
+		# add tests to test plugin
+		try:
+			from qgistester.tests import addTestModule
+			from examplelessons.test import testplugin
+			addTestModule(testplugin, "Example lessons")
+		except Exception as ex:
+			pass
 
 	def unload(self):
 		pass

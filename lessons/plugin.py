@@ -12,12 +12,13 @@ class LessonsPlugin:
 	def __init__(self, iface):
 		self.iface = iface
 
-                try:
-                    from tests import testerplugin
-                    from qgistester.tests import addTestModule
-                    addTestModule(testerplugin, 'Lessons plugin')
-                except:
-                    pass
+		# add tests to test plugin
+		try:
+			from qgistester.tests import addTestModule
+			from lessons.test import testplugin
+			addTestModule(testplugin, "Lessons")
+		except Exception as ex:
+			pass
 
 		self.lessonWidget = None
 

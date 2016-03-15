@@ -14,12 +14,13 @@ class LessonsCreator:
 	def __init__(self, iface):
 		self.iface = iface
 
-                try:
-                    from tests import testerplugin
-                    from qgistester.tests import addTestModule
-                    addTestModule(testerplugin, 'LessonsCreator')
-                except:
-                    pass
+		# add tests to tester plugin
+		try:
+			from qgistester.tests import addTestModule
+			from lessonscreator.test import testplugin
+			addTestModule(testplugin, "LessonsCreator")
+		except Exception as ex:
+			pass
 
 		self.capturing = False
 
