@@ -11,6 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   intro
+   usage 
+   writing_lessons
+
 
 
 Indices and tables
