@@ -30,7 +30,7 @@ All these elements are explained in a later section in this document.
 Replace *lesson_module* with the reference to your lesson module (which you should have imported), and add as many entries as module you have created in your set of lessons.
 
 
-An example of a plugin that adds a collection of lessons can be found in the ```lessonscollectionplugin``` folder of this repository. Use is as a template for you own collections. If using it, you do not have to manually call the ```addLessonModule``` method. The plugin will automatically discover all available lessons. The only thing you have to do is to add your lessons under the ```lessons``` subfolder, each of them in its corresponding subfolder, as described above.
+An example of a plugin that adds a collection of lessons can be found in the ```examplelessons``` folder of this repository. Use is as a template for you own collections. If using it, you do not have to manually call the ```addLessonModule``` method. The plugin will automatically discover all available lessons. The only thing you have to do is to add your lessons under the ```_lessons``` subfolder, each of them in its corresponding subfolder, as described above.
 
 
 Creating a lesson
@@ -90,7 +90,7 @@ The help files associated with a lesson contain text and usually screenshots. Th
 
 An additional plugin is included in this repository, in the ```lessonscreator``` folder, aimed at users that plan to create their own lessons. It simplifies both writing text and creating screenshots, by capturing actions performed in QGIS. That is, the user performs the steps in the lesson to create, and the plugin tries to automatically create the corresponding lesson files.
 
-To create a new lesson, select the *Plugins/Lessons/Cature lesson steps* menu. Select a folder to store the lessons data. 
+To create a new lesson, select the *Plugins/Lessons/Capture lesson steps* menu. Select a folder to store the lessons data. 
 
 From that moment, the plugin will be listening to your actions and documenting them according to the following ideas:
 
@@ -110,5 +110,5 @@ All texts snippets and screenshots are added to the html file that describes the
 
 When you have captured all elements of you lesson, select the *Plugins/Lessons/Stop capturing lesson steps* menu.
 
-In the folder that you selected, you will find all html files and image files. You will also find a ```___init.py___``` file that describe the lesson. The folder as it is generated can be added to your lessons plugin (created based on the ```lessonscollectionplugin``` template) and will be recognised as a valid lesson.
+In the folder that you selected, you will find all html files and image files. You will also find a ```___init.py___``` file that describe the lesson. The folder as it is generated can be added to your lessons plugin (created based on the ```examplelessons``` template) and will be recognised as a valid lesson.
 
