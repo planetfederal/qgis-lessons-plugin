@@ -10,8 +10,8 @@ Contribute
 
 If you wish to contribute patches you can `fork the project <https://help.github.com/forking/>`_, make your changes, commit to your repository, and then `issue a pull request <http://help.github.com/pull-requests/>`_. The development team can then review your contribution and commit it upstream as appropriate.
 
-Documetation
-------------
+Documentation
+-------------
 
 The plugin is documented `here <http://boundlessgeo.github.io/qgis-plugins-documentation/lessons>`_.
 
