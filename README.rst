@@ -1,5 +1,5 @@
-QGIS Lessons
-============
+Lessons
+=======
 
 A plugin for QGIS to create step-by-step lessons and tutorials.
 
