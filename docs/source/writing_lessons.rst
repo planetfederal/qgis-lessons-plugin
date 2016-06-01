@@ -27,7 +27,7 @@ All these elements are explained in a later section in this document.
     except:
         pass
 
-Replace *lesson_module* with the reference to your lesson module (which you should have imported), and add as many entries as module you have created in your set of lessons.
+Replace *lesson_module* with the reference to your lesson module (which you should have imported), and add as many entries as modules you have created in your set of lessons.
 
 
 An example of a plugin that adds a collection of lessons can be found in the ```examplelessons``` folder of this repository. Use is as a template for you own collections. If using it, you do not have to manually call the ```addLessonModule``` method. The plugin will automatically discover all available lessons. The only thing you have to do is to add your lessons under the ```_lessons``` subfolder, each of them in its corresponding subfolder, as described above.
@@ -42,15 +42,15 @@ Create a ```Lesson``` object, specifying its name, the group it belongs to (less
 
 ::
 
-	lesson = Lesson ("Interpolating from a points layer", "Analysis lessons"
-					"this lessons shows how to use the interpolation capabilities of QGIS")
+	lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
+					"This lessons shows how to use the interpolation capabilities of QGIS")
 
 Instead of a string with the description, you can pass the name of an HTML file containing a richer description. For instance:
 
 
 ::
 
-	lesson = Lesson ("Interpolating from a points layer", "Analysis lessons"
+	lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
 					"lesson.html")
 
 There is no need to add the full path to the file, as long as the file is in the same folder as the ```__init__.py``` file. The full path will be correctly resolved at runtime.
@@ -74,7 +74,7 @@ Here is a description of its arguments:
 - **endsignal**: a signal that indicates that the step has been finished. If not None, the plugin will listen to the passed signal, and when it is emitted, it will automatically move to the next step.
 - **endsignalcheck**: In case it is needed to check that the *endsignal* signal should actually cause moving to the next step, pass a function to do the checking using this parameters. Should be used if the signal might be emmited in cases that do not represent the end of the step. Should be None if no check has to be performed.
 - **endcheck**: a function to check that the step has been correctly executed. This function will be run when the lesson moves to the next step. If should return true if the user has correctly performed the task for this step, or false otherwise. In this last case, the plugin will show a warning message and won't let the user move to the next step until the step is correctly completed.
-- **steptype**: ```Step.MANUALSTEP``` if the step is to be performed manuallyl by the user, or ```Step.AUTOMATEDSTEP``` if it's an automated one. In this last case, the step will not be shown in the list of them in the lesson explorer, and it is required to pass a function using the ```function``` argument.
+- **steptype**: ```Step.MANUALSTEP``` if the step is to be performed manually by the user, or ```Step.AUTOMATEDSTEP``` if it's an automated one. In this last case, the step will not be shown in the list of them in the lesson explorer, and it is required to pass a function using the ```function``` argument.
 
 Convenience methods and utils
 ------------------------------
