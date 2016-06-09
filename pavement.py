@@ -49,6 +49,10 @@ def install(options):
         dst.rmtree()
         src.copy(dst)
 
+@task
+def setup():
+    """Empty: to ensure we use the same build/install procedure for all our plugins"""
+    pass
 
 @task
 def install_devtools():
