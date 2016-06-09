@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/boundlessgeo/qgis-lessons-plugin.svg?branch=master
+    :target: https://travis-ci.org/boundlessgeo/qgis-lessons-plugin
+
 Lessons
 =======
 
