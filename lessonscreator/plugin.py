@@ -19,7 +19,7 @@ class LessonsCreator:
 			from qgistester.tests import addTestModule
 			from lessonscreator.test import testplugin
 			addTestModule(testplugin, "LessonsCreator")
-		except Exception as ex:
+		except Exception as e:
 			pass
 
 		self.capturing = False
@@ -30,6 +30,14 @@ class LessonsCreator:
 		del self.newStepAction
 
 		QgsApplication.instance().focusChanged.disconnect(self.processFocusChanged)
+
+		try:
+			from qgistester.tests import removeTestModule
+			from lessonscreator.test import testplugin
+			removeTestModule(testplugin, "LessonsCreator")
+		except Exception as e:
+			pass
+
 
 	def initGui(self):
 		lessonIcon = QIcon(os.path.dirname(__file__) + '/edit.png')

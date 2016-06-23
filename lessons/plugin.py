@@ -17,7 +17,7 @@ class LessonsPlugin:
 			from qgistester.tests import addTestModule
 			from lessons.test import testplugin
 			addTestModule(testplugin, "Lessons")
-		except Exception as ex:
+		except Exception as e:
 			pass
 
 		self.lessonWidget = None
@@ -27,6 +27,13 @@ class LessonsPlugin:
 	def unload(self):
 		self.iface.removePluginMenu(u"Lessons", self.action)
 		del self.action
+
+		try:
+			from qgistester.tests import removeTestModule
+			from lessons.test import testplugin
+			removeTestModule(testplugin, "Lessons")
+		except Exception as e:
+			pass
 
 
 	def initGui(self):
