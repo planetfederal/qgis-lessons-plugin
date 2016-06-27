@@ -1,15 +1,20 @@
-from PyQt4 import QtGui, uic, QtCore
 import os
-from lessons import lessons
 from collections import defaultdict
+
+from PyQt4 import uic
+from PyQt4.QtCore import QUrl
+from PyQt4.QtGui import QIcon, QTreeWidgetItem, QDialogButtonBox, QTextDocument
+
+from lessons import lessons
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonselector.ui'))
 
+
 class LessonSelector(BASE, WIDGET):
 
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        super(LessonSelector, self).__init__()
         self.setupUi(self)
 
         self.lesson = None
@@ -18,12 +23,12 @@ class LessonSelector(BASE, WIDGET):
         for lesson in lessons:
             allLessons[lesson.group].append(lesson)
 
-        lessonIcon = QtGui.QIcon(os.path.dirname(__file__) + '/lesson.gif')
+        lessonIcon = QIcon(os.path.dirname(__file__) + '/lesson.gif')
         for group, groupLessons in allLessons.iteritems():
-            groupItem = QtGui.QTreeWidgetItem()
+            groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
             for lesson in groupLessons:
-                lessonItem = QtGui.QTreeWidgetItem()
+                lessonItem = QTreeWidgetItem()
                 lessonItem.lesson = lesson
                 lessonItem.setText(0, lesson.name)
                 lessonItem.setIcon(0, lessonIcon)
@@ -38,7 +43,7 @@ class LessonSelector(BASE, WIDGET):
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
 
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
     def itemDoubleClicked(self, item, i):
         if hasattr(item, "lesson"):
@@ -49,17 +54,18 @@ class LessonSelector(BASE, WIDGET):
         item = self.lessonsTree.currentItem()
         if item:
             if hasattr(item, "lesson"):
-                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
                 if os.path.exists(item.lesson.description):
                     with open(item.lesson.description) as f:
                         html = "".join(f.readlines())
-                    self.webView.setHtml(html, QtCore.QUrl.fromUserInput(item.lesson.description))
+                    self.webView.document().setMetaInformation(QTextDocument.DocumentUrl,
+                                                               QUrl.fromUserInput(item.lesson.description).toString())
+                    self.webView.setHtml(html)
                 else:
                     self.webView.setHtml("<p>%s</p>" % item.lesson.description)
             else:
-                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
                 self.webView.setHtml("")
-
 
     def cancelPressed(self):
         self.close()
@@ -67,4 +73,3 @@ class LessonSelector(BASE, WIDGET):
     def okPressed(self):
         self.lesson = self.lessonsTree.selectedItems()[0].lesson
         self.close()
-

@@ -1,5 +1,9 @@
 import os
-from PyQt4 import uic, QtGui, QtCore
+
+from PyQt4 import uic
+from PyQt4.QtCore import Qt, QCoreApplication, QUrl, pyqtSignal
+from PyQt4.QtGui import QIcon, QListWidgetItem, QMessageBox, QTextDocument
+
 from utils import execute
 from lesson import Step
 
@@ -8,15 +12,15 @@ WIDGET, BASE = uic.loadUiType(
 
 class LessonWidget(BASE, WIDGET):
 
-    lessonFinished = QtCore.pyqtSignal()
+    lessonFinished = pyqtSignal()
 
     def __init__(self, lesson):
-        QtGui.QWidget.__init__(self)
+        super(LessonWidget, self).__init__()
         self.setupUi(self)
         self.lesson = lesson
-        bulletIcon = QtGui.QIcon(os.path.dirname(__file__) + '/bullet.png')
+        bulletIcon = QIcon(os.path.dirname(__file__) + '/bullet.png')
         for step in lesson.steps:
-            item = QtGui.QListWidgetItem(step.name)
+            item = QListWidgetItem(step.name)
             self.listSteps.addItem(item)
             item.setHidden(step.steptype == Step.AUTOMATEDSTEP)
             item.setIcon(bulletIcon)
@@ -26,9 +30,8 @@ class LessonWidget(BASE, WIDGET):
         self.currentStep = 0
         self.moveToNextStep()
 
-
     def runCurrentStepFunction(self):
-        QtCore.QCoreApplication.processEvents()
+        QCoreApplication.processEvents()
         step = self.lesson.steps[self.currentStep]
         self.webView.setEnabled(False)
         execute(step.function)
@@ -38,10 +41,10 @@ class LessonWidget(BASE, WIDGET):
     def stepFinished(self):
         step = self.lesson.steps[self.currentStep]
         if step.endcheck is not None and not step.endcheck():
-            QtGui.QMessageBox.warning(self, "Lesson", "It seems that the previous step\nwas not correctly completed")
+            QMessageBox.warning(self, "Lesson", "It seems that the previous step\nwas not correctly completed")
             return
         item = self.listSteps.item(self.currentStep)
-        item.setBackground(QtCore.Qt.white)
+        item.setBackground(Qt.white)
         if step.endsignal is not None:
             step.endsignal.disconnect(self.endSignalEmitted )
         self.currentStep += 1
@@ -52,24 +55,25 @@ class LessonWidget(BASE, WIDGET):
         if step.endsignalcheck is None or step.endsignalcheck(*args):
             self.stepFinished()
 
-
     def moveToNextStep(self):
         if self.currentStep == len(self.lesson.steps):
-            QtGui.QMessageBox.information(self, "Lesson", "You have reached the end of this lesson")
+            QMessageBox.information(self, "Lesson", "You have reached the end of this lesson")
             self.finishLesson()
         else:
             step = self.lesson.steps[self.currentStep]
             if step.endsignal is not None:
                 step.endsignal.connect(self.endSignalEmitted)
             item = self.listSteps.item(self.currentStep)
-            item.setBackground(QtCore.Qt.green)
+            item.setBackground(Qt.green)
             if os.path.exists(step.description):
                 with open(step.description) as f:
                         html = "".join(f.readlines())
-                self.webView.setHtml(html, QtCore.QUrl.fromUserInput(step.description))
+                self.webView.document().setMetaInformation(QTextDocument.DocumentUrl,
+                                                           QUrl.fromUserInput(step.description).toString())
+                self.webView.setHtml(html)
             else:
                 self.webView.setHtml(step.description)
-            QtCore.QCoreApplication.processEvents()
+            QCoreApplication.processEvents()
             if step.prestep is not None:
                 execute(step.prestep)
             if step.function is not None:
@@ -84,8 +88,3 @@ class LessonWidget(BASE, WIDGET):
     def finishLesson(self):
         self.setVisible(False)
         self.lessonFinished.emit()
-
-
-
-
-
