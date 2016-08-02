@@ -45,7 +45,11 @@ class Lesson():
     def addStep(self, name, description, function=None, prestep=None, endsignal=None,
                 endsignalcheck=None, endcheck=lambda:True, steptype=1):
         description = self.resolveFile(description)
-        step = Step(name, description, execute(function), prestep, endsignal, endsignalcheck, endcheck, steptype)
+        if function is not None:
+            _function = lambda: execute(function)
+        else:
+            _function = None
+        step = Step(name, description, _function, prestep, endsignal, endsignalcheck, endcheck, steptype)
         self.steps.append(step)
 
     def addMenuClickStep(self, menuName):
