@@ -22,8 +22,6 @@ class LessonsPlugin:
 
 		self.lessonWidget = None
 
-		#lessons.addLessonModule(exporttogeojson)
-
 	def unload(self):
 		self.iface.removePluginMenu(u"Lessons", self.action)
 		del self.action
