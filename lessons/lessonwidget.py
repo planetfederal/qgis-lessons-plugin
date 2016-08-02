@@ -2,7 +2,8 @@ import os
 
 from PyQt4 import uic
 from PyQt4.QtCore import Qt, QCoreApplication, QUrl, pyqtSignal
-from PyQt4.QtGui import QIcon, QListWidgetItem, QMessageBox, QTextDocument
+from PyQt4.QtGui import QIcon, QListWidgetItem, QMessageBox, QTextDocument, QListWidget
+from qgis.utils import iface
 
 from utils import execute
 from lesson import Step
@@ -26,6 +27,7 @@ class LessonWidget(BASE, WIDGET):
             item.setIcon(bulletIcon)
         self.btnFinish.clicked.connect(self.finishLesson)
         self.btnMove.clicked.connect(self.stepFinished)
+        self.btnRestart.clicked.connect(self.restartLesson)
         self.btnRunStep.clicked.connect(self.runCurrentStepFunction)
         self.currentStep = 0
         self.moveToNextStep()
@@ -55,9 +57,17 @@ class LessonWidget(BASE, WIDGET):
         if step.endsignalcheck is None or step.endsignalcheck(*args):
             self.stepFinished()
 
+    def restartLesson(self):
+        for i in range(self.listSteps.count()):
+            item = self.listSteps.item(i)
+            item.setBackground(Qt.white)
+        self.currentStep = 0
+        self.moveToNextStep()
+
     def moveToNextStep(self):
         if self.currentStep == len(self.lesson.steps):
-            QMessageBox.information(self, "Lesson", "You have reached the end of this lesson")
+            QMessageBox.information(iface.mainWindow(), "Lessons",
+                        "Congratulations! You have correctly finished this lesson.");
             self.finishLesson()
         else:
             step = self.lesson.steps[self.currentStep]
@@ -87,4 +97,5 @@ class LessonWidget(BASE, WIDGET):
 
     def finishLesson(self):
         self.setVisible(False)
+
         self.lessonFinished.emit()

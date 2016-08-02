@@ -10,8 +10,11 @@
     <height>524</height>
    </rect>
   </property>
+  <property name="floating">
+   <bool>false</bool>
+  </property>
   <property name="features">
-   <set>QDockWidget::DockWidgetMovable</set>
+   <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
   </property>
   <property name="allowedAreas">
    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -67,9 +70,16 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="btnRestart">
+        <property name="text">
+         <string>Restart lesson</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnFinish">
         <property name="text">
-         <string>Finish lesson</string>
+         <string>Quit lesson</string>
         </property>
        </widget>
       </item>
