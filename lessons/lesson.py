@@ -1,5 +1,5 @@
 import os
-from utils import openProject, unfoldMenu, menuFromName
+from utils import openProject, menuFromName, execute
 import traceback
 
 class Step():
@@ -45,12 +45,12 @@ class Lesson():
     def addStep(self, name, description, function=None, prestep=None, endsignal=None,
                 endsignalcheck=None, endcheck=lambda:True, steptype=1):
         description = self.resolveFile(description)
-        step = Step(name, description, function, prestep, endsignal, endsignalcheck, endcheck, steptype)
+        step = Step(name, description, execute(function), prestep, endsignal, endsignalcheck, endcheck, steptype)
         self.steps.append(step)
 
     def addMenuClickStep(self, menuName):
         menu, action = menuFromName(menuName)
-        name = "Click on '%s' menu item" % menuName
+        name = "Click on '%s' menu item.<br>Once you click, the lesson will automatically move to the next step." % menuName
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
         self.addStep(name, name, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
