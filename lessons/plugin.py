@@ -6,6 +6,7 @@ from lessonwidget import LessonWidget
 from lessonselector import LessonSelector
 import os
 import lessons
+from lessons.utils import execute
 
 class LessonsPlugin:
 
@@ -53,6 +54,7 @@ class LessonsPlugin:
 			self.iface.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.lessonWidget)
 			def lessonFinished():
 				self.lessonWidget = None
+				execute(dlg.lesson.cleanup)
 			self.lessonWidget.lessonFinished.connect(lessonFinished)
 
 
