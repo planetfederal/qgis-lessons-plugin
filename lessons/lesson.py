@@ -53,4 +53,4 @@ class Lesson():
         name = "Click on '%s' menu item" % menuName
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
-        self.addStep(name, name, None, lambda:unfoldMenu(menu, action), menu.triggered, checkMenu, None, Step.MANUALSTEP)
+        self.addStep(name, name, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
