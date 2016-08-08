@@ -1,6 +1,7 @@
 import os
 from utils import openProject, menuFromName, execute
 import traceback
+import yaml
 
 class Step():
 
@@ -19,8 +20,10 @@ class Step():
 
 class Lesson():
 
-    def __init__(self, name, group, description):
-        self.folder = os.path.dirname(traceback.extract_stack()[-2][0])
+    def __init__(self, name, group, description, folder = None):
+        if folder is None:
+            folder = os.path.dirname(traceback.extract_stack()[-2][0])
+        self.folder = folder
         self.steps = []
         self.name = name
         self.group = group
@@ -58,3 +61,13 @@ class Lesson():
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
         self.addStep(name, name, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
+
+def lessonFromYamlFile(f):
+    with open(f) as stream:
+        lessonDict = yaml.load(stream)
+    lesson = Lesson(lessonDict["name"], lessonDict["group"], lessonDict["description"],
+                    os.path.dirname(f))
+    for step in lessonDict["steps"]:
+        lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
+    return lesson
+
