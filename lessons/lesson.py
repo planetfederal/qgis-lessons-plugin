@@ -57,10 +57,11 @@ class Lesson():
 
     def addMenuClickStep(self, menuName):
         menu, action = menuFromName(menuName)
-        name = "Click on '%s' menu item.<br>Once you click, the lesson will automatically move to the next step." % menuName
+        name = "Click on '%s' menu item." % menuName
+        description = name + "<br>Once you click, the lesson will automatically move to the next step."
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
-        self.addStep(name, name, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
+        self.addStep(name, description, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
 
 def lessonFromYamlFile(f):
     with open(f) as stream:
