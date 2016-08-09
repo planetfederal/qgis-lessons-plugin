@@ -21,7 +21,7 @@ All these elements are explained in a later section in this document.
 
 ::
 
-	try:
+    try:
         from lessons import addLessonModule
         addLessonModule(lesson_module)
     except:
@@ -43,16 +43,16 @@ Create a ```Lesson``` object, specifying its name, the group it belongs to (less
 
 ::
 
-	lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
-					"This lessons shows how to use the interpolation capabilities of QGIS")
+    lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
+                    "This lessons shows how to use the interpolation capabilities of QGIS")
 
 Instead of a string with the description, you can pass the name of an HTML file containing a richer description. For instance:
 
 
 ::
 
-	lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
-					"lesson.html")
+    lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
+                    "lesson.html")
 
 There is no need to add the full path to the file, as long as the file is in the same folder as the ```__init__.py``` file. The full path will be correctly resolved at runtime.
 
@@ -62,8 +62,8 @@ If your lesson requires loading data into QGIS, you can prepare a project with t
 Now you can add steps to your lesson using the ```addStep``` method, which has the following signature:
 
 ::
-	
-	addStep(self, name, description, function=None, prestep=None, endsignal=None,
+    
+    addStep(self, name, description, function=None, prestep=None, endsignal=None,
                 endsignalcheck=None, endcheck=lambda:True, steptype=1):
 
 Here is a description of its arguments:
@@ -103,19 +103,19 @@ Here's the lesson YAML file, with comments to explain its content:
 
 ::
 
-	name: Export to geojson (yaml example) #The name of the lesson
-	group: Basic lessons #The group the lesson belongs to
-	description: lesson.html #the filename of the description page, which has to be in this same folder. 
-								# You can also put the html code here directly
-	steps: #a list of steps in the lesson, in the correct order in which they have to be performed
-	    - name: Set 'points' layer as active layer 
-	      description: activelayer.html #the filename of the description page for this step
-										#Text or html code can be entered here as well, instead of a filepath
+    name: Export to geojson (yaml example) #The name of the lesson
+    group: Basic lessons #The group the lesson belongs to
+    description: lesson.html #the filename of the description page, which has to be in this same folder. 
+                                # You can also put the html code here directly
+    steps: #a list of steps in the lesson, in the correct order in which they have to be performed
+        - name: Set 'points' layer as active layer 
+          description: activelayer.html #the filename of the description page for this step
+                                        #Text or html code can be entered here as well, instead of a filepath
 
-	    - menu: Layer/Save As... # this will add a step that prompts the user to click on the specified menu
+        - menu: Layer/Save As... # this will add a step that prompts the user to click on the specified menu
 
-	    - name: Save the file as geojson
-	      description: saveas.html
+        - name: Save the file as geojson
+          description: saveas.html
 
 
 
@@ -135,9 +135,9 @@ From that moment, the plugin will be listening to your actions and documenting t
 
 - Whenever the focus changes between two elements (but both of them having the same parent window/dialog), and the one that receives the focus is an input widget (text box, dropdown list, etc), a screenshot of the new element that receives the focus will be taken. The element that receives the focus will be highlighted in the screenshot using a red dashed rectangle, as shown in the image below
 
-	.. figure:: rectangle.png
+    .. figure:: rectangle.png
 
-	The image will be added to the html corresponding to the current step, along with a text entry in the form "Click on [widget_name]"
+    The image will be added to the html corresponding to the current step, along with a text entry in the form "Click on [widget_name]"
 
 - When edit widgets lose focus or are modified, the plugin will try to capture the user action. For instance, for a dropdown list, when the current value is changed, the text "Select [new_value_text] in the [dropdown_name] dropdown list" is added. In the case of text boxes, the text "Enter [text] in the [textbox_name] textbox" is added.
 
