@@ -2,11 +2,10 @@ name: Export to geojson (yaml example) #The name of the lesson
 group: Basic lessons #The group the lesson belongs to
 description: lesson.html #the filename of the description page, which has to be in this same folder. You can also put the html code here directly
 steps: #a list of steps in the lesson, in the correct order in which they have to be performed
-    - name: Set 'points' layer as active layer 
+    - name: Set 'points' layer as active layer
       description: activelayer.html #the filename of the description page for this step
 
-    - name: Select the 'Layer/Save As...' menu
-      description: Select the 'Save As...' menu item in the 'Layers' menu #Text or html code can be entered here as well, instead of a filepath
+    - menu: Layer/Save As... # this will add a step that prompts the user to click on the specified menu
 
     - name: Save the file as geojson
       description: saveas.html

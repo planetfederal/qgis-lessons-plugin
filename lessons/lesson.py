@@ -68,6 +68,9 @@ def lessonFromYamlFile(f):
     lesson = Lesson(lessonDict["name"], lessonDict["group"], lessonDict["description"],
                     os.path.dirname(f))
     for step in lessonDict["steps"]:
-        lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
+        if "menu" in step:
+            lesson.addMenuClickStep(step["menu"])
+        else:
+            lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
     return lesson
 
