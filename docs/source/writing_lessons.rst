@@ -12,7 +12,7 @@ The recommended procedure for adding new lessons is as follows:
 
 - ```__init__.py```
 - [html files describing the lesson and each step in it]
-- [data used for this lessons]
+- [data used for this lesson]
 - ```project.qgs```
 
 All these elements are explained in a later section in this document.
@@ -29,6 +29,7 @@ All these elements are explained in a later section in this document.
 
 Replace *lesson_module* with the reference to your lesson module (which you should have imported), and add as many entries as modules you have created in your set of lessons.
 
+If you plugin contains several lesson, there is no need to call the ```addLessonModule``` method repeatedly. You can use the ```addLessonsFolder``` method and pass the path to the folder that contains the lesson subfolders
 
 An example of a plugin that adds a collection of lessons can be found in the ```examplelessons``` folder of this repository. Use is as a template for you own collections. If using it, you do not have to manually call the ```addLessonModule``` method. The plugin will automatically discover all available lessons. The only thing you have to do is to add your lessons under the ```_lessons``` subfolder, each of them in its corresponding subfolder, as described above.
 
@@ -79,9 +80,45 @@ Here is a description of its arguments:
 Convenience methods and utils
 ------------------------------
 
-To make it easier to create new lessons, you will find some convenience methods in the ```Lesson``` class and functions for performing common tasks in the lessons.utils module.
+To make it easier to create new lessons, you will find some convenience methods in the ```Lesson``` class and functions for performing common tasks in the ```lessons.utils``` module.
 
-The addMenuClickStep() method in the ```Lesson```class will add step that involves clicking on a menu item. Its only argument is the name of the menu to click. This method will add a step that unfold the specified menu and highlights the corresponding menu item, and that will automatically move to the next step once that menu item is clicked.
+The ```addMenuClickStep()``` method in the ```Lesson```class will add step that involves clicking on a menu item. Its only argument is the name of the menu to click. This method will add a step that unfolds the specified menu and highlights the corresponding menu item, and that will automatically move to the next step once that menu item is clicked.
+
+
+Creating simple lessons with YAML files
+----------------------------------------
+
+Lesson can also be creted using YAMLS files, allowing those with no Python experience to create their own lessons. Instead of a ```___init___.py``` file, you need a ```lesson.yaml``` file. The file structure of the folder  that contains the lesson should be like this:
+
+- ```lesson.yaml```
+- [html files describing the lesson and each step in it]
+- [data used for this lesson]
+- ```project.qgs```
+
+Lessons created this way cannot content automated routines, such as presteps or methods to check if the step was correctly performed before moving to the next one. Instead, they are just a collection of steps, each of them with an associated description.
+
+The plugin in the ```examplelessons``` folder also contains a lesson based on a YAML file. It is actually the same lesson that is included as a Python example, although it doesn't contain some of the elements in that one, such as automatically running some steps, since those are not available in this case, as explained above.
+
+Here's the lesson YAML file, with comments to explain its content:
+
+::
+
+	name: Export to geojson (yaml example) #The name of the lesson
+	group: Basic lessons #The group the lesson belongs to
+	description: lesson.html #the filename of the description page, which has to be in this same folder. 
+								# You can also put the html code here directly
+	steps: #a list of steps in the lesson, in the correct order in which they have to be performed
+	    - name: Set 'points' layer as active layer 
+	      description: activelayer.html #the filename of the description page for this step
+										#Text or html code can be entered here as well, instead of a filepath
+
+	    - menu: Layer/Save As... # this will add a step that prompts the user to click on the specified menu
+
+	    - name: Save the file as geojson
+	      description: saveas.html
+
+
+
 
 Capturing QGIS interaction to create a lesson
 ----------------------------------------------
