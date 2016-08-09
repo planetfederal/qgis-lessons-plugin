@@ -31,6 +31,17 @@ Replace *lesson_module* with the reference to your lesson module (which you shou
 
 If you plugin contains several lesson, there is no need to call the ```addLessonModule``` method repeatedly. You can use the ```addLessonsFolder``` method and pass the path to the folder that contains the lesson subfolders
 
+In the ```unload``` method of your plugin, you should remove the lessons using the ```removeLessonModule``` or ```removeLessonsFolder``` methods :
+
+::
+
+    try:
+        from lessons import removeLessonsFolder
+    except:
+        return
+
+    removeLessonsFolder(lesson_folder)
+
 An example of a plugin that adds a collection of lessons can be found in the ```examplelessons``` folder of this repository. Use is as a template for you own collections. If using it, you do not have to manually call the ```addLessonModule``` method. The plugin will automatically discover all available lessons. The only thing you have to do is to add your lessons under the ```_lessons``` subfolder, each of them in its corresponding subfolder, as described above.
 
 
