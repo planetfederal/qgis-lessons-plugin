@@ -7,17 +7,23 @@ import os
 
 class LessonsCollection:
 
+	folder = os.path.join(os.path.dirname(__file__), "_lessons")
+
 	def __init__(self, iface):
 		try:
 			from lessons import addLessonsFolder
 		except:
 			return
 
-		folder = os.path.join(os.path.dirname(__file__), "_lessons")
-		addLessonsFolder(folder)
+		addLessonsFolder(self.folder)
 
 	def unload(self):
-		pass
+		try:
+			from lessons import removeLessonsFolder
+		except:
+			return
+
+		removeLessonsFolder(self.folder)
 
 	def initGui(self):
 		pass

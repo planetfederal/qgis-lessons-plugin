@@ -5,27 +5,54 @@ from lessons.lesson import lessonFromYamlFile
 
 lessons = []
 
+def _addLesson(toAdd):
+    for lesson in lessons:
+        if lesson.name == toAdd.name and lesson.group == toAdd.group:
+            return
+    lessons.append(toAdd)
+
+def _removeLesson(toRemove):
+    for lesson in lessons[::-1]:
+        if lesson.name == toRemove.name and lesson.group == toRemove.group:
+            lessons.remove(lesson)
+
 def addLessonModule(module):
     if "lesson" in dir(module):
-        lessons.append(module.lesson)
+        _addLesson(module.lesson)
+
+def removeLessonModule(module):
+    if "lesson" in dir(module):
+        _removeLesson(module.lesson)
+
+def isPackage(folder, subfolder):
+    path = os.path.join(folder, subfolder)
+    return os.path.isdir(path) and glob.glob(os.path.join(path, '__init__.py*'))
+
+def isYamlLessonFolder(folder, subfolder):
+    path = os.path.join(folder, subfolder)
+    return os.path.isdir(path) and glob.glob(os.path.join(path, 'lesson.yaml'))
 
 def addLessonsFolder(folder):
-    def isPackage(d):
-        d = os.path.join(folder, d)
-        return os.path.isdir(d) and glob.glob(os.path.join(d, '__init__.py*'))
-    def isYamlLessonFolder(d):
-        d = os.path.join(folder, d)
-        return os.path.isdir(d) and glob.glob(os.path.join(d, 'lesson.yaml'))
     subname = os.path.basename(folder)
     name = os.path.basename(os.path.dirname(folder))
-    packages = filter(isPackage, os.listdir(folder))
+    packages = filter(lambda x: isPackage(folder, x), os.listdir(folder))
     for p in packages:
         m = __import__(".".join([name,subname,p]), fromlist="dummy")
         addLessonModule(m)
-    folders = filter(isYamlLessonFolder, os.listdir(folder))
+    folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
     for f in folders:
-        lessons.append(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
+        _addLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
 
+def removeLessonsFolder(folder):
+    subname = os.path.basename(folder)
+    name = os.path.basename(os.path.dirname(folder))
+    packages = filter(lambda x: isPackage(folder, x), os.listdir(folder))
+    for p in packages:
+        m = __import__(".".join([name,subname,p]), fromlist="dummy")
+        removeLessonModule(m)
+    folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
+    for f in folders:
+        _removeLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
 
 def classFactory(iface):
     from plugin import LessonsPlugin
