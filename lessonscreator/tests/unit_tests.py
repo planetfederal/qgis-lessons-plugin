@@ -34,11 +34,11 @@ def suite():
     suite = unittest.makeSuite(unitTests, 'test')
     return suite
 
-# run all tests using unittest skipping nose or testplugin
+# run all tests using unittest skipping nose or testerplugin
 def run_all():
     # demo_test = unittest.TestLoader().loadTestsFromTestCase(unitTests)
     unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite())
 
-# run a subset of tests using unittest skipping nose or testplugin
+# run a subset of tests using unittest skipping nose or testerplugin
 def run_subset():
     unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suiteSubset())

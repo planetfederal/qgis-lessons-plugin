@@ -18,8 +18,8 @@ class LessonsPlugin:
 		# add tests to test plugin
 		try:
 			from qgistester.tests import addTestModule
-			from lessons.test import testplugin
-			addTestModule(testplugin, "Lessons")
+			from lessons.test import testerplugin
+			addTestModule(testerplugin, "Lessons")
 		except Exception as e:
 			pass
 
@@ -31,8 +31,8 @@ class LessonsPlugin:
 
 		try:
 			from qgistester.tests import removeTestModule
-			from lessons.test import testplugin
-			removeTestModule(testplugin, "Lessons")
+			from lessons.test import testerplugin
+			removeTestModule(testerplugin, "Lessons")
 		except Exception as e:
 			pass
 
