@@ -17,8 +17,8 @@ matrix:
   allow_failures:
   - env: QGIS_VERSION_TAG=master
 before_install:
-- docker pull boundlessgeo/qgis-testing-environment:latest
-- docker tag boundlessgeo/qgis-testing-environment:latest qgis-testing-environment
+- docker pull boundlessgeo/qgis-testing-environment:$QGIS_VERSION_TAG
+- docker tag boundlessgeo/qgis-testing-environment:$QGIS_VERSION_TAG qgis-testing-environment
 install:
 - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e DISPLAY=:99 qgis-testing-environment
 - sleep 10
