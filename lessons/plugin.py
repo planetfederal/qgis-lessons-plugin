@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtGui, QtCore
+from qgis.core import QgsApplication
 from lessonwidget import LessonWidget
 from lessonselector import LessonSelector
 import os
 import lessons
 from lessons.utils import execute
+import webbrowser
 
 class LessonsPlugin:
 
@@ -40,6 +42,11 @@ class LessonsPlugin:
 		self.action = QtGui.QAction(lessonIcon, "Start lessons", self.iface.mainWindow())
 		self.action.triggered.connect(self.start)
 		self.iface.addPluginToMenu(u"Lessons", self.action)
+		helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')
+		self.helpAction = QtGui.QAction(helpIcon, "Lessons plugin help", self.iface.mainWindow())
+		self.helpAction.setObjectName("lessonsPluginHelp")
+		self.helpAction.triggered.connect(lambda: webbrowser.open_new("file://" + os.path.join(os.path.dirname(__file__), "docs", "html", "index.html")))
+		self.iface.addPluginToMenu("Lessons", self.helpAction) 
 		self.lessonwidget = None
 
 
