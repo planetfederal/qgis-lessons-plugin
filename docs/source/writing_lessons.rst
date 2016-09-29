@@ -88,6 +88,21 @@ Here is a description of its arguments:
 - **endcheck**: a function to check that the step has been correctly executed. This function will be run when the lesson moves to the next step. If should return true if the user has correctly performed the task for this step, or false otherwise. In this last case, the plugin will show a warning message and won't let the user move to the next step until the step is correctly completed.
 - **steptype**: ```Step.MANUALSTEP``` if the step is to be performed manually by the user, or ```Step.AUTOMATEDSTEP``` if it's an automated one. In this last case, the step will not be shown in the list of them in the lesson explorer, and it is required to pass a function using the ```function``` argument.
 
+Additionaly, you can add a cleanup method, that will be run when the lesson is finished or the user exits the lesson before finishing it.
+
+::
+
+    lesson.addCleanup(cleanupMethod)
+
+If your lesson is related to other lessons, you can add them as recommended lesson to continue after the current one is finished.
+
+::
+
+    lesson.addNextLesson("Lessons Group", "Name of the lesson")
+
+Name and group name must match the name and group name of the lesson that you want to add, which ideally should be in the same plugin, to ensure that it is installed as well when the current lesson is avaliable.
+
+
 Convenience methods and utils
 ------------------------------
 
