@@ -28,6 +28,7 @@ class Lesson():
         self.name = name
         self.group = group
         self.cleanup = lambda: None
+        self.nextLessons = []
         self.description = self.resolveFile(description)
         path = os.path.join(self.folder, "project.qgs")
         if os.path.exists(path):
@@ -35,6 +36,9 @@ class Lesson():
 
     def setCleanup(self,function):
         self.cleanup = function
+        
+    def addNextLesson(self, group, name):
+        self.nextLessons.append((group,name))
 
     def resolveFile(self, f):
         if f is None:

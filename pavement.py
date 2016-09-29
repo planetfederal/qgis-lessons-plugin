@@ -48,6 +48,20 @@ def install(options):
         src.copy(dst)
 
 @task
+def install_lessons(options):
+    """Install sample lessons to QGIS plugin directory
+    """
+    src = path(__file__).dirname() / "examplelessons"
+    dst = path('~').expanduser() / '.qgis2' / 'python' / 'plugins' / "examplelessons"
+    src = src.abspath()
+    dst = dst.abspath()
+    if hasattr(src, 'symlink'):
+        src.symlink(dst)
+    else:
+        dst.rmtree()
+        src.copy(dst)
+
+@task
 def setup():
     """Empty: to ensure we use the same build/install procedure for all our plugins"""
     pass

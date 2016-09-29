@@ -7,6 +7,7 @@ from qgis.utils import iface
 
 from utils import execute
 from lesson import Step
+from lessonfinisheddialog import LessonFinishedDialog
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonwidget.ui'))
@@ -18,6 +19,14 @@ class LessonWidget(BASE, WIDGET):
     def __init__(self, lesson):
         super(LessonWidget, self).__init__()
         self.setupUi(self)
+        self.btnFinish.clicked.connect(self.finishLesson)
+        self.btnMove.clicked.connect(self.stepFinished)
+        self.btnRestart.clicked.connect(self.restartLesson)
+        self.btnRunStep.clicked.connect(self.runCurrentStepFunction)
+        self.init(lesson)
+        
+    def init(self, lesson):
+        self.listSteps.clear()
         self.lesson = lesson
         bulletIcon = QIcon(os.path.dirname(__file__) + '/bullet.png')
         for step in lesson.steps:
@@ -25,10 +34,6 @@ class LessonWidget(BASE, WIDGET):
             self.listSteps.addItem(item)
             item.setHidden(step.steptype == Step.AUTOMATEDSTEP)
             item.setIcon(bulletIcon)
-        self.btnFinish.clicked.connect(self.finishLesson)
-        self.btnMove.clicked.connect(self.stepFinished)
-        self.btnRestart.clicked.connect(self.restartLesson)
-        self.btnRunStep.clicked.connect(self.runCurrentStepFunction)
         self.currentStep = 0
         self.moveToNextStep()
 
@@ -66,9 +71,12 @@ class LessonWidget(BASE, WIDGET):
 
     def moveToNextStep(self):
         if self.currentStep == len(self.lesson.steps):
-            QMessageBox.information(iface.mainWindow(), "Lessons",
-                        "Congratulations! You have correctly finished this lesson.");
-            self.finishLesson()
+            dlg = LessonFinishedDialog(self.lesson)
+            dlg.exec_()
+            if dlg.nextLesson is not None:
+                self.init(dlg.nextLesson)
+            else:
+                self.finishLesson()
         else:
             step = self.lesson.steps[self.currentStep]
             if step.endsignal is not None:

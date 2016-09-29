@@ -53,6 +53,11 @@ def removeLessonsFolder(folder):
     folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
     for f in folders:
         _removeLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
+        
+def lessonFromName(group, name):
+    for lesson in lessons:
+        if lesson.group == group and lesson.name == name:
+            return lesson
 
 def classFactory(iface):
     from plugin import LessonsPlugin

@@ -21,4 +21,5 @@ lesson.addStep("Set 'points' layer as active layer", "activelayer.html",
                function = setActiveLayer, endcheck=isLayerActive, steptype=Step.MANUALSTEP)
 lesson.addMenuClickStep("Layer/Save As...")
 lesson.addStep("Save the file as geojson", "saveas.html", steptype=Step.MANUALSTEP)
+lesson.addNextLesson("Basic lessons", "Export to geojson (yaml example)")
 
