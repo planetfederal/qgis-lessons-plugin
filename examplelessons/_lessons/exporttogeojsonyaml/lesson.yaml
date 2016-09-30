@@ -10,5 +10,5 @@ steps: #a list of steps in the lesson, in the correct order in which they have t
     - name: Save the file as geojson
       description: saveas.html
 nextLessons:
-	- name: "Export to geojson"
-	  group: "Basic lessons"
+    - name: Export to geojson
+      group: Basic lessons
