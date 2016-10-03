@@ -75,7 +75,10 @@ def installLessonsFromZipFile(path):
         z.extractall(lessonsFolder())
         lessons = list(set([os.path.split(os.path.dirname(x))[0] for x in z.namelist()]))
         for lesson in lessons:
-            addLessonsFolder(os.path.join(lessonsFolder, lesson))
+            addLessonsFolder(os.path.join(lessonsFolder(), lesson))
+
+for lesson in os.listdir(lessonsFolder()):
+    addLessonsFolder(os.path.join(lessonsFolder(), lesson))
 
 def classFactory(iface):
     from plugin import LessonsPlugin
