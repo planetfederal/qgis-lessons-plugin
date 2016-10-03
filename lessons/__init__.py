@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import glob
+import zipfile
 from lessons.lesson import lessonFromYamlFile
+from PyQt4.QtCore import QDir
+from qgis.core import QgsApplication
 
 lessons = []
 
@@ -53,11 +56,26 @@ def removeLessonsFolder(folder):
     folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
     for f in folders:
         _removeLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
-        
+
 def lessonFromName(group, name):
     for lesson in lessons:
         if lesson.group == group and lesson.name == name:
             return lesson
+
+
+def lessonsFolder():
+    folder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'python', 'plugins', 'lessons', '_lessons')
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
+
+    return QDir.toNativeSeparators(folder)
+
+def installLessonsFromZipFile(path):
+    with zipfile.ZipFile(path, "r") as z:
+        z.extractall(lessonsFolder())
+        lessons = list(set([os.path.split(os.path.dirname(x))[0] for x in z.namelist()]))
+        for lesson in lessons:
+            addLessonsFolder(os.path.join(lessonsFolder, lesson))
 
 def classFactory(iface):
     from plugin import LessonsPlugin
