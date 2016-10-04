@@ -2,6 +2,7 @@ from PyQt4 import QtCore, QtGui
 from qgis.utils import iface
 from qgis.core import *
 import os
+import shutil
 
 
 
@@ -81,6 +82,17 @@ def menuFromName(menuName):
         name = getMenuPath(menu) + "/" + action.text().replace("&","")
         if name == menuName:
             return menu, action
+
+def lessonDataFolder(lessonFolderName):
+    folder = os.path.join(os.path.expanduser("~"), "qgislessonsdata", lessonFolderName)
+    if not QtCore.QDir(folder).exists():
+        QtCore.QDir().mkpath(folder)
+
+    return QtCore.QDir.toNativeSeparators(folder)
+
+def copyLessonData(filename, lessonFolderName):
+    dest = os.path.join(lessonDataFolder(lessonFolderName), os.path.basename(filename))
+    shutil.copy2(filename, dest)
 
 def unfoldMenu(menu, action):
     '''Unfolds a menu and all parent menus, and highlights an entry in that menu'''
