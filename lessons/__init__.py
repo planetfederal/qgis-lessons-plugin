@@ -77,8 +77,7 @@ def installLessonsFromZipFile(path):
         for lesson in lessons:
             addLessonsFolder(os.path.join(lessonsFolder(), lesson))
 
-for lesson in os.listdir(lessonsFolder()):
-    addLessonsFolder(os.path.join(lessonsFolder(), lesson))
+addLessonsFolder(lessonsFolder())
 
 def classFactory(iface):
     from plugin import LessonsPlugin
