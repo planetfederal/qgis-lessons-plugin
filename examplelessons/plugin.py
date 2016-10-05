@@ -15,7 +15,7 @@ class LessonsCollection:
 		except:
 			return
 
-		addLessonsFolder(self.folder)
+		addLessonsFolder(self.folder, "examplelessons")
 
 	def unload(self):
 		try:
@@ -23,7 +23,7 @@ class LessonsCollection:
 		except:
 			return
 
-		removeLessonsFolder(self.folder)
+		removeLessonsFolder(self.folder, "examplelessons"))
 
 	def initGui(self):
 		pass

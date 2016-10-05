@@ -25,6 +25,8 @@ class LessonsPlugin:
 
 		self.lessonWidget = None
 
+		iface.initializationCompleted.connect(lessons.loadLessons)
+
 	def unload(self):
 		self.iface.removePluginMenu(u"Lessons", self.action)
 		del self.action
@@ -46,7 +48,7 @@ class LessonsPlugin:
 		self.helpAction = QtGui.QAction(helpIcon, "Lessons plugin help", self.iface.mainWindow())
 		self.helpAction.setObjectName("lessonsPluginHelp")
 		self.helpAction.triggered.connect(lambda: webbrowser.open_new("file://" + os.path.join(os.path.dirname(__file__), "docs", "html", "index.html")))
-		self.iface.addPluginToMenu("Lessons", self.helpAction) 
+		self.iface.addPluginToMenu("Lessons", self.helpAction)
 		self.lessonwidget = None
 
 

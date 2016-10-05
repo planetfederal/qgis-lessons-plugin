@@ -35,24 +35,33 @@ def isYamlLessonFolder(folder, subfolder):
     path = os.path.join(folder, subfolder)
     return os.path.isdir(path) and glob.glob(os.path.join(path, 'lesson.yaml'))
 
-def addLessonsFolder(folder):
-    subname = os.path.basename(folder)
-    name = os.path.basename(os.path.dirname(folder))
-    packages = filter(lambda x: isPackage(folder, x), os.listdir(folder))
+def addLessonsFolder(folder, pluginName):
+    packages = filter(lambda x: os.path.isdir(os.path.join(folder, x)), os.listdir(folder))
     for p in packages:
-        m = __import__(".".join([name,subname,p]), fromlist="dummy")
-        addLessonModule(m)
+        tokens = folder.split(os.sep)
+        moduleTokens = tokens[tokens.index(pluginName):] + [p]
+        moduleName = ".".join(moduleTokens)
+        try:
+            m = __import__(moduleName, fromlist="dummy")
+            addLessonModule(m)
+        except:
+            pass
     folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
     for f in folders:
-        _addLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
+         _addLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
 
-def removeLessonsFolder(folder):
-    subname = os.path.basename(folder)
-    name = os.path.basename(os.path.dirname(folder))
+
+def removeLessonsFolder(folder, pluginName):
     packages = filter(lambda x: isPackage(folder, x), os.listdir(folder))
     for p in packages:
-        m = __import__(".".join([name,subname,p]), fromlist="dummy")
-        removeLessonModule(m)
+        tokens = folder.split(os.sep)
+        moduleTokens = tokens[tokens.index(pluginName):] + [p]
+        moduleName = ".".join(moduleTokens)
+        try:
+            m = __import__(moduleName, fromlist="dummy")
+            removeLessonModule(m)
+        except:
+            pass
     folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
     for f in folders:
         _removeLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
@@ -64,11 +73,11 @@ def lessonFromName(group, name):
 
 
 def lessonsFolder():
-    folder = os.path.join(QgsApplication.qgisSettingsDirPath(), 'python', 'plugins', 'lessons', '_lessons')
+    folder = os.path.join(os.path.dirname(__file__), '_lessons')
     if not QDir(folder).exists():
         QDir().mkpath(folder)
 
-    return QDir.toNativeSeparators(folder)
+    return folder
 
 def installLessonsFromZipFile(path):
     with zipfile.ZipFile(path, "r") as z:
@@ -77,7 +86,10 @@ def installLessonsFromZipFile(path):
         for lesson in lessons:
             addLessonsFolder(os.path.join(lessonsFolder(), lesson))
 
-addLessonsFolder(lessonsFolder())
+def loadLessons():
+    for folder in os.listdir(lessonsFolder()):
+        if os.path.isdir(os.path.join(lessonsFolder(), folder)):
+            addLessonsFolder(os.path.join(lessonsFolder(), folder), "lessons")
 
 def classFactory(iface):
     from plugin import LessonsPlugin
