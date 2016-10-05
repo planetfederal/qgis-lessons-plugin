@@ -36,7 +36,7 @@ class Lesson():
 
     def setCleanup(self,function):
         self.cleanup = function
-        
+
     def addNextLesson(self, group, name):
         self.nextLessons.append((group,name))
 
@@ -77,7 +77,9 @@ def lessonFromYamlFile(f):
             lesson.addMenuClickStep(step["menu"])
         else:
             lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
-    for nextLesson in lessonDict["nextLessons"]:
-        lesson.addNextLesson(nextLesson["group"], nextLesson["name"])
+
+    if "nextLessons" in lessonDict:
+        for nextLesson in lessonDict["nextLessons"]:
+            lesson.addNextLesson(nextLesson["group"], nextLesson["name"])
     return lesson
 
