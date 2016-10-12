@@ -1,7 +1,9 @@
 import os
-from utils import openProject, menuFromName, execute
+from utils import openProject, menuFromName, execute, getMenuPaths
 import traceback
 import yaml
+import difflib
+from qgis.core import QgsMessageLog
 
 class Step():
 
@@ -74,7 +76,13 @@ def lessonFromYamlFile(f):
                     os.path.dirname(f))
     for step in lessonDict["steps"]:
         if "menu" in step:
-            lesson.addMenuClickStep(step["menu"])
+            try:
+                lesson.addMenuClickStep(step["menu"])
+            except:
+                closest = difflib.get_close_matches(step["menu"], getMenuPaths())[0]
+                QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s.\n Maybe you meant '%s'"
+                                         % (step['menu'], closest), level=QgsMessageLog.WARNING)
+                return None
         else:
             lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
 

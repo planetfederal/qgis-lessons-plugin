@@ -48,7 +48,9 @@ def addLessonsFolder(folder, pluginName):
             pass
     folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
     for f in folders:
-         _addLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
+        lesson = lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml"))
+        if lesson:
+            _addLesson(lesson)
 
 
 def removeLessonsFolder(folder, pluginName):
@@ -64,7 +66,10 @@ def removeLessonsFolder(folder, pluginName):
             pass
     folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
     for f in folders:
-        _removeLesson(lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml")))
+        lesson = lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml"))
+        if lesson:
+            _removeLesson(lesson)
+
 
 def lessonFromName(group, name):
     for lesson in lessons:

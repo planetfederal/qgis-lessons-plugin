@@ -49,14 +49,14 @@ def loadLayerNoCrsDialog(filename, name=None):
     settings.setValue('/Projections/defaultBehaviour', prjSetting)
     return layer
 
-def menuFromName(menuName):
-    def getMenuPath(menu):
-        path = []
-        while isinstance(menu, QtGui.QMenu):
-            path.append(menu.title().replace("&",""))
-            menu = menu.parent()
-        return "/".join(path[::-1])
+def getMenuPath(menu):
+    path = []
+    while isinstance(menu, QtGui.QMenu):
+        path.append(menu.title().replace("&",""))
+        menu = menu.parent()
+    return "/".join(path[::-1])
 
+def getAllMenus():
     def getActions(action, menu):
         menuActions = []
         submenu = action.menu()
@@ -78,10 +78,18 @@ def menuFromName(menuName):
     for action in actions:
         menuActions.extend(getActions(action, None))
 
+    return menuActions
+
+def menuFromName(menuName):
+    menuActions = getAllMenus()
     for action, menu in menuActions:
         name = getMenuPath(menu) + "/" + action.text().replace("&","")
         if name == menuName:
             return menu, action
+
+def getMenuPaths():
+    menuActions = getAllMenus()
+    return [getMenuPath(menu) + "/" + action.text().replace("&","") for action,menu in menuActions]
 
 def lessonDataFolder(lessonFolderName):
     folder = os.path.join(os.path.expanduser("~"), "qgislessonsdata", lessonFolderName)

@@ -23,7 +23,7 @@ class LessonsCollection:
 		except:
 			return
 
-		removeLessonsFolder(self.folder, "examplelessons"))
+		removeLessonsFolder(self.folder, "examplelessons")
 
 	def initGui(self):
 		pass
