@@ -63,8 +63,10 @@ class Lesson():
 
     def addMenuClickStep(self, menuName):
         menu, action = menuFromName(menuName)
-        name = "Click on '%s' menu item." % menuName
-        description = name + "<br>Once you click, the lesson will automatically move to the next step."
+        name = "Click on '%s' menu item." % action.text().replace("&","")
+        description = "<p>Click on <b>%s</b> menu item.</p>" \
+                      "<p>Once you click, the lesson will automatically move to the next step.</p>"\
+                      % menuName.replace("/"," > ")
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
         self.addStep(name, description, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
@@ -76,13 +78,14 @@ def lessonFromYamlFile(f):
                     os.path.dirname(f))
     for step in lessonDict["steps"]:
         if "menu" in step:
-            try:
-                lesson.addMenuClickStep(step["menu"])
-            except:
-                closest = difflib.get_close_matches(step["menu"], getMenuPaths())[0]
-                QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s.\n Maybe you meant '%s'"
-                                         % (step['menu'], closest), level=QgsMessageLog.WARNING)
-                return None
+            lesson.addMenuClickStep(step["menu"])
+            #try:
+            #    lesson.addMenuClickStep(step["menu"])
+            #except:
+            #    closest = difflib.get_close_matches(step["menu"], getMenuPaths())[0]
+            #    QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s.\n Maybe you meant '%s'"
+            #                             % (step['menu'], closest), level=QgsMessageLog.WARNING)
+            #    return None
         else:
             lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
 
