@@ -9,6 +9,8 @@ import os
 import lessons
 from lessons.utils import execute
 import webbrowser
+from PyQt4.QtCore import QDir
+import shutil
 
 class LessonsPlugin:
 
@@ -30,6 +32,10 @@ class LessonsPlugin:
 	def unload(self):
 		self.iface.removePluginMenu(u"Lessons", self.action)
 		del self.action
+
+		tempDir = os.path.join(QDir.tempPath(), 'lessons' , 'lesson')
+		if QDir(tempDir).exists():
+			shutil.rmtree(tempDir, True)
 
 		try:
 			from qgistester.tests import removeTestModule

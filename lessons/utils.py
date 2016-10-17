@@ -3,9 +3,8 @@ from qgis.utils import iface
 from qgis.core import *
 import os
 import shutil
-
-
-
+from PyQt4.QtCore import QDir
+import time
 
 def layerFromName(name):
     '''
@@ -113,8 +112,13 @@ def unfoldMenu(menu, action):
     m.setActiveAction(action)
 
 def openProject(projectFile):
-    if projectFile != QgsProject.instance().fileName():
-        iface.addProject(projectFile)
+    folder = os.path.dirname(projectFile)
+    projectName = os.path.basename(projectFile)
+    tempDir = os.path.join(QDir.tempPath(), 'lessons' , 'lesson' + str(time.time()))
+    dest = os.path.abspath(tempDir)
+    shutil.copytree(folder, dest)
+    tempProjectFile = os.path.join(dest, projectName)
+    iface.addProject(tempProjectFile)
 
 _dialog = None
 
