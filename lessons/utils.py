@@ -5,6 +5,7 @@ import os
 import shutil
 from PyQt4.QtCore import QDir
 import time
+import re
 
 def layerFromName(name):
     '''
@@ -81,9 +82,10 @@ def getAllMenus():
 
 def menuFromName(menuName):
     menuActions = getAllMenus()
+    shortMenuName = re.match(r"(.*\/)?(.*\/.*)$",menuName).group(2)
     for action, menu in menuActions:
         name = getMenuPath(menu) + "/" + action.text().replace("&","")
-        if name == menuName:
+        if re.match(r"(.*\/)?(.*\/.*)$",name).group(2) == shortMenuName:
             return menu, action
 
 def getMenuPaths():

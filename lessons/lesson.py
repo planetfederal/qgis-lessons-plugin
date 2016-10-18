@@ -61,10 +61,13 @@ class Lesson():
         step = Step(name, description, _function, prestep, endsignal, endsignalcheck, endcheck, steptype)
         self.steps.append(step)
 
-    def addMenuClickStep(self, menuName):
+    def addMenuClickStep(self, menuName, description=None):
         menu, action = menuFromName(menuName)
-        name = "Click on '%s' menu item." % menuName
-        description = name + "<br>Once you click, the lesson will automatically move to the next step."
+        name = "Click on '%s' menu item." % action.text().replace("&","")
+        if description is None:
+            description = "<p>Click on <b>%s</b> menu item.</p>" \
+                          "<p>Once you click, the lesson will automatically move to the next step.</p>"\
+                          % menuName.replace("/"," > ")
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
         self.addStep(name, description, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
@@ -76,8 +79,14 @@ def lessonFromYamlFile(f):
                     os.path.dirname(f))
     for step in lessonDict["steps"]:
         if "menu" in step:
+            if "description" in step:
+                description = step["description"]
+            else:
+                description = None
+
             try:
-                lesson.addMenuClickStep(step["menu"])
+                lesson.addMenuClickStep(step["menu"], description)
+
             except:
                 closest = difflib.get_close_matches(step["menu"], getMenuPaths())[0]
                 QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s.\n Maybe you meant '%s'"
