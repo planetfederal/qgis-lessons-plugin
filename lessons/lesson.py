@@ -88,10 +88,13 @@ def lessonFromYamlFile(f):
                 lesson.addMenuClickStep(step["menu"], description)
 
             except:
-                closest = difflib.get_close_matches(step["menu"], getMenuPaths())[0]
-                QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s.\n Maybe you meant '%s'"
-                                         % (step['menu'], closest), level=QgsMessageLog.WARNING)
-                return None
+                closest = difflib.get_close_matches(step["menu"], getMenuPaths())
+                if closest:
+                    lesson.addMenuClickStep(closest[0], description)
+                else:
+                    QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s" % step['menu'],
+                                             level=QgsMessageLog.WARNING)
+                    return None
         else:
             lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
 
