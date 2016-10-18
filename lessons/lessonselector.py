@@ -35,6 +35,8 @@ class LessonSelector(BASE, WIDGET):
                 groupItem.addChild(lessonItem)
             self.lessonsTree.addTopLevelItem(groupItem)
 
+        self.lessonsTree.sortItems(0, 0)
+
         self.lessonsTree.expandAll()
 
         self.lessonsTree.currentItemChanged.connect(self.currentItemChanged)
