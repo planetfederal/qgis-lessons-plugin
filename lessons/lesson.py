@@ -62,12 +62,23 @@ class Lesson():
         self.steps.append(step)
 
     def addMenuClickStep(self, menuName, description=None):
-        menu, action = menuFromName(menuName)
+        try:
+            menu, action = menuFromName(menuName)
+        except:
+            closest = difflib.get_close_matches(menuName, getMenuPaths())
+            if closest:
+                menu, action = menuFromName(closest[0])
+            else:
+                QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s" % menuName,
+                                         level=QgsMessageLog.WARNING)
+                return None
+
         name = "Click on '%s' menu item." % action.text().replace("&","")
         if description is None:
             description = "<p>Click on <b>%s</b> menu item.</p>" \
                           "<p>Once you click, the lesson will automatically move to the next step.</p>"\
                           % menuName.replace("/"," > ")
+
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
         self.addStep(name, description, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
@@ -84,17 +95,8 @@ def lessonFromYamlFile(f):
             else:
                 description = None
 
-            try:
-                lesson.addMenuClickStep(step["menu"], description)
+            lesson.addMenuClickStep(step["menu"], description)
 
-            except:
-                closest = difflib.get_close_matches(step["menu"], getMenuPaths())
-                if closest:
-                    lesson.addMenuClickStep(closest[0], description)
-                else:
-                    QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s" % step['menu'],
-                                             level=QgsMessageLog.WARNING)
-                    return None
         else:
             lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
 
