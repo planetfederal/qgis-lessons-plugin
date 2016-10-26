@@ -57,10 +57,3 @@ Go to :menuselection:`Plugins --> Install plugin from ZIP` menu item. Then, brow
 .. _Boundless QGIS Plugin Repository: http://qgis.boundlessgeo.com
 .. _Boundless Connect: http://connect.boundlessgeo.com/
 .. _Boundless Connect plugin's usage documentation: https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html
-
-Post installation notes
------------------------
-
-.. note::
-
-   Because this plugin adds a new renderer, you will have to **restart QGIS before you can use it**.
