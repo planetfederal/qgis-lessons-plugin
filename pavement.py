@@ -6,6 +6,10 @@
 import os
 import xmlrpclib
 import zipfile
+import requests 
+import zipfile
+import StringIO
+import shutil 
 
 from paver.easy import *
 
@@ -16,6 +20,7 @@ options(
         source_dir = path('lessons'),
         package_dir = path('.'),
         tests = ['test'],
+        lessons = ['_lessons'],
         excludes = [
             '*.pyc',
             '.git',
@@ -92,6 +97,7 @@ def install_devtools():
 @task
 @cmdopts([
     ('tests', 't', 'Package tests with plugin'),
+    ('lessons', 'l', 'Package lessons with plugin')
 ])
 def package(options):
     """Create plugin package
@@ -99,6 +105,23 @@ def package(options):
     builddocs(options)
     package_file = options.plugin.package_dir / ('%s.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+        if hasattr(options.package, 'lessons'):
+            lessonsPath = os.path.abspath("./lessons/_lessonstemp")
+            if os.path.exists(lessonsPath):
+                shutil.rmtree(lessonsPath)
+            r = requests.get("https://github.com/boundlessgeo/desktop-lessons/archive/master.zip", stream=True)
+            z = zipfile.ZipFile(StringIO.StringIO(r.content))
+            z.extractall(path=lessonsPath)
+            dstBase = "./lessons/_lessons"
+            for f in os.listdir(os.path.join(lessonsPath, "desktop-lessons-master")):
+                if os.path.isdir(f):
+                    dst = os.path.join(dstBase, f)
+                    if os.path.exists(dst):
+                        shutil.rmtree(dst)
+                    shutil.copytree(os.path.join(lessonsPath,"desktop-lessons-master", f), dst)
+            shutil.rmtree(lessonsPath)
+        else:
+            options.plugin.excludes.extend(options.plugin.lessons)
         if not hasattr(options.package, 'tests'):
             options.plugin.excludes.extend(options.plugin.tests)
         _make_zip(zf, options)
