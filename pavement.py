@@ -97,7 +97,7 @@ def install_devtools():
 @task
 @cmdopts([
     ('tests', 't', 'Package tests with plugin'),
-    ('lessons', 'l', 'Package lessons with plugin')
+    ('nolessons', 'n', 'Do not package lessons with plugin')
 ])
 def package(options):
     """Create plugin package
@@ -105,7 +105,9 @@ def package(options):
     builddocs(options)
     package_file = options.plugin.package_dir / ('%s.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, 'w', zipfile.ZIP_DEFLATED) as zf:
-        if hasattr(options.package, 'lessons'):
+        if hasattr(options.package, 'nolessons'):
+            options.plugin.excludes.extend(options.plugin.lessons)
+        else:
             lessonsPath = os.path.abspath("./lessons/_lessonstemp")
             if os.path.exists(lessonsPath):
                 shutil.rmtree(lessonsPath)
@@ -120,8 +122,6 @@ def package(options):
                         shutil.rmtree(dst)
                     shutil.copytree(os.path.join(lessonsPath,"desktop-lessons-master", f), dst)
             shutil.rmtree(lessonsPath)
-        else:
-            options.plugin.excludes.extend(options.plugin.lessons)
         if not hasattr(options.package, 'tests'):
             options.plugin.excludes.extend(options.plugin.tests)
         _make_zip(zf, options)
