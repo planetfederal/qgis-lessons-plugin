@@ -28,3 +28,11 @@ git clone --recursive http://github.com/boundlessgeo/qgis-lessons-plugin.git
 Also, to update the submodules whenever there are changes in the remote repositories one should do:
 
 git submodule update --remote
+
+
+Sample lessons
+---------------
+
+By default, the  package task will add lessons from the desktop-lessons repository. To avoid it, use the ``--nolessons`` modifier
+
+
