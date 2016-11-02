@@ -111,6 +111,7 @@ def package(options):
             lessonsPath = os.path.abspath("./lessons/_lessonstemp")
             if os.path.exists(lessonsPath):
                 shutil.rmtree(lessonsPath)
+            print "Downloading lessons..."
             r = requests.get("https://github.com/boundlessgeo/desktop-lessons/archive/master.zip", stream=True)
             z = zipfile.ZipFile(StringIO.StringIO(r.content))
             z.extractall(path=lessonsPath)
