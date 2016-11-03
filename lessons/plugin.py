@@ -27,11 +27,11 @@ class LessonsPlugin:
 
 		self.lessonWidget = None
 
-		iface.initializationCompleted.connect(lessons.loadLessons)
-
 	def unload(self):
 		self.iface.removePluginMenu(u"Lessons", self.action)
-		del self.action
+		del self.helpAction
+		self.iface.removePluginMenu(u"Lessons", self.helpAction)
+		del self.helpAction
 
 		tempDir = os.path.join(QDir.tempPath(), 'lessons' , 'lesson')
 		if QDir(tempDir).exists():
@@ -56,6 +56,8 @@ class LessonsPlugin:
 		self.helpAction.triggered.connect(lambda: webbrowser.open_new("file://" + os.path.join(os.path.dirname(__file__), "docs", "html", "index.html")))
 		self.iface.addPluginToMenu("Lessons", self.helpAction)
 		self.lessonwidget = None
+
+		lessons.loadLessons()
 
 
 	def start(self):
