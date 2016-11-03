@@ -117,11 +117,12 @@ def package(options):
             z.extractall(path=lessonsPath)
             dstBase = "./lessons/_lessons"
             for f in os.listdir(os.path.join(lessonsPath, "desktop-lessons-master")):
-                if os.path.isdir(f):
+                src = os.path.join(lessonsPath, "desktop-lessons-master", f)
+                if os.path.isdir(src):               
                     dst = os.path.join(dstBase, f)
                     if os.path.exists(dst):
                         shutil.rmtree(dst)
-                    shutil.copytree(os.path.join(lessonsPath,"desktop-lessons-master", f), dst)
+                    shutil.copytree(src, dst)
             shutil.rmtree(lessonsPath)
         if not hasattr(options.package, 'tests'):
             options.plugin.excludes.extend(options.plugin.tests)
