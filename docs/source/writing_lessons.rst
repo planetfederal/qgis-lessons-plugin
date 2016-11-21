@@ -108,11 +108,11 @@ Optionally, you can provide a custom description, either as a string of text or 
 
 The ```addMenuClickStep()``` method is particularely useful when a step involves opening a modal dialog that will block QGIS's main window, and will not allow the user to move to the next step and see its description.
 
-Another convenient method is the ```addCleanupMethod()```. With it you can set up a cleanup method, which will run when the lesson is finished, or the user exits the lesson before completing it.
+Another convenient method is the ```setCleanup()```. With it you can set up a cleanup method, which will run when the lesson is finished, or the user exits the lesson before completing it.
 
 ::
 
-    lesson.addCleanup(cleanupMethod)
+    lesson.setCleanup(cleanupMethod)
 
 
 Yet another useful method is ```addNextLesson()```. If your lesson is related to other lessons, you can add them as recommended lesson to continue after the current one is finished.
@@ -222,4 +222,3 @@ In the ```unload``` method of your plugin, you should remove the lessons using t
     removeLessonsFolder(lesson_folder)
 
 An example of a plugin that adds a collection of lessons can be found in the ```examplelessons``` folder of `this repository <https://github.com/boundlessgeo/qgis-lessons-plugin>`_. Use is as a template for your own collections. Using it, you do not have to call the ```addLessonModule()``` method manually. The plugin will automatically discover all available lessons. The only thing you have to do is to add your lessons under the ```_lessons``` subfolder, each of them in its corresponding subfolder, as described above.
-
