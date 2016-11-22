@@ -1,7 +1,7 @@
 [general]
 name=Lessons Plugin
 description=Plugin for self-paced lessons and tutorials
-about=The Lessons Plugin selectively runs other plugins that are formatted as lessons or tutorials that offer self-paced, interactive learning within QGIS.
+about= Run self-paced tutorials for interactive learning within QGIS. Or create and share your own workflows to standardize procedures in your organization.
 version=0.1
 qgisMinimumVersion=2.0
 author=Victor Olaya (Boundless)
