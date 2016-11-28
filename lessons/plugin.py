@@ -33,7 +33,7 @@ class LessonsPlugin(object):
 
     def unload(self):
         self.iface.removePluginMenu(u"Lessons", self.action)
-        del self.helpAction
+        del self.action
         self.iface.removePluginMenu(u"Lessons", self.helpAction)
         del self.helpAction
 
