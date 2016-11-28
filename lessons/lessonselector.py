@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import os
 from collections import defaultdict
 
-from PyQt4 import uic
-from PyQt4.QtCore import QUrl
-from PyQt4.QtGui import QIcon, QTreeWidgetItem, QDialogButtonBox, QTextDocument
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox
 
 from lessons import lessons
 
@@ -24,7 +27,7 @@ class LessonSelector(BASE, WIDGET):
             allLessons[lesson.group].append(lesson)
 
         lessonIcon = QIcon(os.path.dirname(__file__) + '/lesson.gif')
-        for group, groupLessons in allLessons.iteritems():
+        for group, groupLessons in allLessons.items():
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
             for lesson in groupLessons:

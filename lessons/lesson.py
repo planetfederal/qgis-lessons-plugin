@@ -1,13 +1,18 @@
+from builtins import range
+from builtins import object
+# -*- coding: utf-8 -*-
+
 import os
-from utils import openProject, menuFromName, execute, getMenuPaths
 import traceback
 import yaml
 import difflib
 from qgis.core import QgsMessageLog
 
-class Step():
+from lessons.utils import openProject, menuFromName, execute, getMenuPaths
 
-    MANUALSTEP, AUTOMATEDSTEP = range(2)
+class Step(object):
+
+    MANUALSTEP, AUTOMATEDSTEP = list(range(2))
 
     def __init__(self, name, description, function=None, prestep=None, endsignal=None,
                  endsignalcheck=None, endcheck=lambda:True, steptype=1):
@@ -20,7 +25,7 @@ class Step():
         self.endsignalcheck = endsignalcheck
         self.steptype = steptype
 
-class Lesson():
+class Lesson(object):
 
     def __init__(self, name, group, description, folder = None):
         if folder is None:
@@ -104,4 +109,3 @@ def lessonFromYamlFile(f):
         for nextLesson in lessonDict["nextLessons"]:
             lesson.addNextLesson(nextLesson["group"], nextLesson["name"])
     return lesson
-

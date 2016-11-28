@@ -1,3 +1,4 @@
+from builtins import map
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -27,7 +28,7 @@ class unitTests(unittest.TestCase):
 
 def suiteSubset():
     tests = ['test1']
-    suite = unittest.TestSuite(map(unitTests, tests))
+    suite = unittest.TestSuite(list(map(unitTests, tests)))
     return suite
 
 def suite():

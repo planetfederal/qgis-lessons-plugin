@@ -1,3 +1,4 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 #
 # (c) 2016 Boundless, http://boundlessgeo.com
@@ -5,31 +6,25 @@
 #
 import os
 
-class LessonsCollection:
+class LessonsCollection(object):
 
-	folder = os.path.join(os.path.dirname(__file__), "_lessons")
+    folder = os.path.join(os.path.dirname(__file__), "_lessons")
 
-	def __init__(self, iface):
-		try:
-			from lessons import addLessonsFolder
-		except:
-			return
+    def __init__(self, iface):
+        try:
+            from lessons import addLessonsFolder
+        except:
+            return
 
-		addLessonsFolder(self.folder, "examplelessons")
+        addLessonsFolder(self.folder, "examplelessons")
 
-	def unload(self):
-		try:
-			from lessons import removeLessonsFolder
-		except:
-			return
+    def unload(self):
+        try:
+            from lessons import removeLessonsFolder
+        except:
+            return
 
-		removeLessonsFolder(self.folder, "examplelessons")
+        removeLessonsFolder(self.folder, "examplelessons")
 
-	def initGui(self):
-		pass
-
-
-
-
-
-
+    def initGui(self):
+        pass

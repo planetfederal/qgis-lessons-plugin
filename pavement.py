@@ -3,13 +3,15 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
 import os
-import xmlrpclib
 import zipfile
-import requests 
+import requests
 import zipfile
-import StringIO
-import shutil 
+import io
+import shutil
 
 from paver.easy import *
 
@@ -111,14 +113,15 @@ def package(options):
             lessonsPath = os.path.abspath("./lessons/_lessonstemp")
             if os.path.exists(lessonsPath):
                 shutil.rmtree(lessonsPath)
-            print "Downloading lessons..."
+            # fix_print_with_import
+            print("Downloading lessons...")
             r = requests.get("https://github.com/boundlessgeo/desktop-lessons/archive/master.zip", stream=True)
-            z = zipfile.ZipFile(StringIO.StringIO(r.content))
+            z = zipfile.ZipFile(io.StringIO(r.content))
             z.extractall(path=lessonsPath)
             dstBase = "./lessons/_lessons"
             for f in os.listdir(os.path.join(lessonsPath, "desktop-lessons-master")):
                 src = os.path.join(lessonsPath, "desktop-lessons-master", f)
-                if os.path.isdir(src):               
+                if os.path.isdir(src):
                     dst = os.path.join(dstBase, f)
                     if os.path.exists(dst):
                         shutil.rmtree(dst)
@@ -221,12 +224,12 @@ def _make_zip(zipFile, options):
             relpath = os.path.relpath(root)
             zipFile.write(path(root) / f, path(relpath) / f)
         filter_excludes(root, dirs)
-    
+
     for root, dirs, files in os.walk(options.sphinx.builddir):
         for f in files:
             relpath = os.path.join(options.plugin.name, "docs", os.path.relpath(root, options.sphinx.builddir))
             zipFile.write(path(root) / f, path(relpath) / f)
- 
+
 @task
 def builddocs(options):
     sh("git submodule init")

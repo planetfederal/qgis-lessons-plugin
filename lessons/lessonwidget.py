@@ -1,13 +1,17 @@
+from builtins import range
+# -*- coding: utf-8 -*-
+
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt, QCoreApplication, QUrl, pyqtSignal
-from PyQt4.QtGui import QIcon, QListWidgetItem, QMessageBox, QTextDocument, QListWidget
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QUrl, pyqtSignal
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QListWidgetItem, QMessageBox, QListWidget
 from qgis.utils import iface
 
-from utils import execute
-from lesson import Step
-from lessonfinisheddialog import LessonFinishedDialog
+from lessons.utils import execute
+from lessons.lesson import Step
+from lessons.lessonfinisheddialog import LessonFinishedDialog
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonwidget.ui'))
@@ -24,7 +28,7 @@ class LessonWidget(BASE, WIDGET):
         self.btnRestart.clicked.connect(self.restartLesson)
         self.btnRunStep.clicked.connect(self.runCurrentStepFunction)
         self.init(lesson)
-        
+
     def init(self, lesson):
         self.listSteps.clear()
         self.lesson = lesson

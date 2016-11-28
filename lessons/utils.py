@@ -1,11 +1,16 @@
-from PyQt4 import QtCore, QtGui
-from qgis.utils import iface
-from qgis.core import *
+from builtins import str
+# -*- coding: utf-8 -*-
+
 import os
-import shutil
-from PyQt4.QtCore import QDir
-import time
 import re
+import time
+import shutil
+
+from qgis.PyQt.QtCore import QDir, QSettings, QThread, pyqtSignal, Qt
+from qgis.PyQt.QtWidgets import QMenu, QApplication
+
+from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QgsRasterLayer
+from qgis.utils import iface
 
 def layerFromName(name):
     '''
@@ -13,7 +18,7 @@ def layerFromName(name):
     Returns None if no layer with that name is found
     If several layers with that name exist, only the first one is returned
     '''
-    layers = QgsMapLayerRegistry.instance().mapLayers().values()
+    layers = list(QgsMapLayerRegistry.instance().mapLayers().values())
     for layer in layers:
         if layer.name() == name:
             return layer
@@ -32,7 +37,7 @@ def loadLayer(filename, name = None):
     if not qgslayer.isValid():
         qgslayer = QgsRasterLayer(filename, name)
         if not qgslayer.isValid():
-            raise RuntimeError('Could not load layer: ' + unicode(filename))
+            raise RuntimeError('Could not load layer: ' + str(filename))
 
     return qgslayer
 
@@ -42,7 +47,7 @@ def loadLayerNoCrsDialog(filename, name=None):
     Same as the loadLayer method, but it does not ask for CRS, regardless of current
     configuration in QGIS settings
     '''
-    settings = QtCore.QSettings()
+    settings = QSettings()
     prjSetting = settings.value('/Projections/defaultBehaviour')
     settings.setValue('/Projections/defaultBehaviour', '')
     layer = loadLayer(filename, name)
@@ -51,7 +56,7 @@ def loadLayerNoCrsDialog(filename, name=None):
 
 def getMenuPath(menu):
     path = []
-    while isinstance(menu, QtGui.QMenu):
+    while isinstance(menu, QMenu):
         path.append(menu.title().replace("&",""))
         menu = menu.parent()
     return "/".join(path[::-1])
@@ -94,10 +99,10 @@ def getMenuPaths():
 
 def lessonDataFolder(lessonFolderName):
     folder = os.path.join(os.path.expanduser("~"), "qgislessonsdata", lessonFolderName)
-    if not QtCore.QDir(folder).exists():
-        QtCore.QDir().mkpath(folder)
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
 
-    return QtCore.QDir.toNativeSeparators(folder)
+    return QDir.toNativeSeparators(folder)
 
 def copyLessonData(filename, lessonFolderName):
     dest = os.path.join(lessonDataFolder(lessonFolderName), os.path.basename(filename))
@@ -106,7 +111,7 @@ def copyLessonData(filename, lessonFolderName):
 def unfoldMenu(menu, action):
     '''Unfolds a menu and all parent menus, and highlights an entry in that menu'''
     menus = []
-    while isinstance(menu, QtGui.QMenu):
+    while isinstance(menu, QMenu):
         menus.append(menu)
         menu = menu.parent()
     for m in menus[::-1]:
@@ -124,12 +129,12 @@ def openProject(projectFile):
 
 _dialog = None
 
-class ExecutorThread(QtCore.QThread):
+class ExecutorThread(QThread):
 
-    finished = QtCore.pyqtSignal()
+    finished = pyqtSignal()
 
     def __init__(self, func):
-        QtCore.QThread.__init__(self, iface.mainWindow())
+        QThread.__init__(self, iface.mainWindow())
         self.func = func
         self.returnValue = None
         self.exception = None
@@ -137,14 +142,14 @@ class ExecutorThread(QtCore.QThread):
     def run (self):
         try:
             self.returnValue = self.func()
-        except Exception, e:
+        except Exception as e:
             self.exception = e
         finally:
             self.finished.emit()
 
 def execute(func):
-    QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     try:
         return func()
     finally:
-        QtGui.QApplication.restoreOverrideCursor()
+        QApplication.restoreOverrideCursor()

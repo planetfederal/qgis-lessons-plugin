@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
 import os
 import glob
 import zipfile
 from lessons.lesson import lessonFromYamlFile
-from PyQt4.QtCore import QDir
+from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
 
 lessons = []
@@ -36,7 +38,7 @@ def isYamlLessonFolder(folder, subfolder):
     return os.path.isdir(path) and glob.glob(os.path.join(path, 'lesson.yaml'))
 
 def addLessonsFolder(folder, pluginName):
-    packages = filter(lambda x: os.path.isdir(os.path.join(folder, x)), os.listdir(folder))
+    packages = [x for x in os.listdir(folder) if os.path.isdir(os.path.join(folder, x))]
     for p in packages:
         tokens = folder.split(os.sep)
         moduleTokens = tokens[tokens.index(pluginName):] + [p]
@@ -46,7 +48,7 @@ def addLessonsFolder(folder, pluginName):
             addLessonModule(m)
         except:
             pass
-    folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
+    folders = [x for x in os.listdir(folder) if isYamlLessonFolder(folder, x)]
     for f in folders:
         lesson = lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml"))
         if lesson:
@@ -54,7 +56,7 @@ def addLessonsFolder(folder, pluginName):
 
 
 def removeLessonsFolder(folder, pluginName):
-    packages = filter(lambda x: isPackage(folder, x), os.listdir(folder))
+    packages = [x for x in os.listdir(folder) if isPackage(folder, x)]
     for p in packages:
         tokens = folder.split(os.sep)
         moduleTokens = tokens[tokens.index(pluginName):] + [p]
@@ -64,7 +66,7 @@ def removeLessonsFolder(folder, pluginName):
             removeLessonModule(m)
         except:
             pass
-    folders = filter(lambda x: isYamlLessonFolder(folder, x), os.listdir(folder))
+    folders = [x for x in os.listdir(folder) if isYamlLessonFolder(folder, x)]
     for f in folders:
         lesson = lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml"))
         if lesson:
@@ -97,5 +99,5 @@ def loadLessons():
             addLessonsFolder(os.path.join(lessonsFolder(), folder), "lessons")
 
 def classFactory(iface):
-    from plugin import LessonsPlugin
+    from .plugin import LessonsPlugin
     return LessonsPlugin(iface)

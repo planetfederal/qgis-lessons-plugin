@@ -4,7 +4,7 @@
 # This code is licensed under the GPL 2.0 license.
 #
 from lessons.lesson import Lesson, Step
-from lessons.utils import *
+from lessons import utils
 from qgis.utils import iface
 from lessons import addLessonModule
 
@@ -13,7 +13,7 @@ def isLayerActive():
     return layer is not None and layer.name() == "points"
 
 def setActiveLayer():
-    layer = layerFromName("points")
+    layer = utils.layerFromName("points")
     iface.setActiveLayer(layer)
 
 lesson = Lesson("Export to geojson", "Basic lessons", "lesson.html")
