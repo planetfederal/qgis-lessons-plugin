@@ -116,7 +116,7 @@ def package(options):
             # fix_print_with_import
             print("Downloading lessons...")
             r = requests.get("https://github.com/boundlessgeo/desktop-lessons/archive/master.zip", stream=True)
-            z = zipfile.ZipFile(io.StringIO(r.content))
+            z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall(path=lessonsPath)
             dstBase = "./lessons/_lessons"
             for f in os.listdir(os.path.join(lessonsPath, "desktop-lessons-master")):
