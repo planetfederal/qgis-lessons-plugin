@@ -35,6 +35,7 @@ class LessonWidget(BASE, WIDGET):
             item.setHidden(step.steptype == Step.AUTOMATEDSTEP)
             item.setIcon(bulletIcon)
         self.currentStep = 0
+        self.lessonNameLabel.setText("<b>Current lesson:</b> %s" % lesson.name)
         self.moveToNextStep()
 
     def runCurrentStepFunction(self):
