@@ -5,7 +5,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QUrl, pyqtSignal
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon, QTextDocument
 from qgis.PyQt.QtWidgets import QListWidgetItem, QMessageBox, QListWidget
 from qgis.utils import iface
 
