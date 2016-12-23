@@ -7,6 +7,7 @@ import time
 import shutil
 
 from qgis.PyQt.QtCore import QDir, QSettings, QThread, pyqtSignal, Qt
+from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QMenu, QApplication
 
 from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QgsRasterLayer

@@ -21,11 +21,14 @@ options(
         source_dir = path('lessons'),
         package_dir = path('.'),
         tests = ['test'],
+        ext_libs = path('lessons/ext-libs'),
+        ext_src = path('lessons/ext-src'),
         lessons = ['_lessons'],
         excludes = [
             '*.pyc',
             '.git',
-            '*.pro'
+            '*.pro',
+            'ext_src',
         ],
         # skip certain files inadvertently found by exclude pattern globbing
         skip_exclude = []
@@ -38,8 +41,25 @@ options(
 )
 
 
+def read_requirements():
+    """Return a list of runtime and list of test requirements"""
+    lines = path('requirements.txt').lines()
+    lines = [ l for l in [ l.strip() for l in lines] if l ]
+    divider = '# test requirements'
+
+    try:
+        idx = lines.index(divider)
+    except ValueError:
+        raise BuildFailure(
+            'Expected to find "%s" in requirements.txt' % divider)
+
+    not_comments = lambda s,e: [ l for l in lines[s:e] if l[0] != '#']
+    return not_comments(0, idx), not_comments(idx+1, None)
+
+
 def _install(folder):
     '''install plugin to qgis'''
+    builddocs(options)
     plugin_name = options.plugin.name
     src = path(__file__).dirname() / plugin_name
     dst = path('~').expanduser() / folder / 'python' / 'plugins' / plugin_name
@@ -50,6 +70,15 @@ def _install(folder):
         src.copytree(dst)
     elif not dst.exists():
         src.symlink(dst)
+    # Symlink the build folder to the parent
+    docs = path('..') / '..' / "docs" / 'build' / 'html'
+    docs_dest = path(__file__).dirname() / plugin_name / "docs"
+    docs_link = docs_dest / 'html'
+    if not docs_dest.exists():
+        docs_dest.mkdir()
+    if not docs_link.islink():
+        docs.symlink(docs_link)
+
 
 @task
 def install(options):
@@ -79,8 +108,21 @@ def install_lessons(options):
 
 @task
 def setup():
-    """Empty: to ensure we use the same build/install procedure for all our plugins"""
-    pass
+    """Install run-time dependencies"""
+    clean = getattr(options, 'clean', False)
+    ext_libs = options.plugin.ext_libs
+    ext_src = options.plugin.ext_src
+    if clean:
+        ext_libs.rmtree()
+    ext_libs.makedirs()
+
+    runtime, test = read_requirements()
+    os.environ['PYTHONPATH']=ext_libs.abspath()
+    for req in runtime + test:
+        sh('easy_install -a -d %(ext_libs)s %(dep)s' % {
+            'ext_libs' : ext_libs.abspath(),
+            'dep' : req
+        })
 
 @task
 def install_devtools():

@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon, QTextDocument
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox
 
 from lessons import lessons

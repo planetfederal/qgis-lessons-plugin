@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import absolute_import
+import site
 import os
+site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/ext-libs'))
 import glob
 import zipfile
 from lessons.lesson import lessonFromYamlFile
