@@ -6,8 +6,6 @@ Lessons
 
 A plugin for QGIS to create step-by-step lessons and tutorials.
 
-Help can be found `here <./doc/source/intro.rst>`_
-
 Contribute
 ----------
 
@@ -16,7 +14,7 @@ If you wish to contribute patches you can `fork the project <https://help.github
 Documentation
 -------------
 
-The plugin is documented `here <http://boundlessgeo.github.io/qgis-plugins-documentation/lessons>`_.
+The plugin is documented `here <https://connect.boundlessgeo.com/docs/desktop/plugins/lessons/>`_.
 
 Cloning this repository
 -----------------------
