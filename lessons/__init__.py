@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import site
 import os
 site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/ext-libs'))
+import imp
 import glob
 import zipfile
 from lessons.lesson import lessonFromYamlFile
@@ -41,10 +42,10 @@ def isYamlLessonFolder(folder, subfolder):
 def addLessonsFolder(folder, pluginName):
     packages = [x for x in os.listdir(folder) if os.path.isdir(os.path.join(folder, x))]
     for p in packages:
-        tokens = folder.split(os.sep)
-        moduleTokens = tokens[tokens.index(pluginName):] + [p]
-        moduleName = ".".join(moduleTokens)
         try:
+            tokens = folder.split(os.sep)
+            moduleTokens = tokens[tokens.index(pluginName):] + [p]
+            moduleName = ".".join(moduleTokens)
             m = __import__(moduleName, fromlist="dummy")
             addLessonModule(m)
         except:
@@ -59,10 +60,10 @@ def addLessonsFolder(folder, pluginName):
 def removeLessonsFolder(folder, pluginName):
     packages = [x for x in os.listdir(folder) if isPackage(folder, x)]
     for p in packages:
-        tokens = folder.split(os.sep)
-        moduleTokens = tokens[tokens.index(pluginName):] + [p]
-        moduleName = ".".join(moduleTokens)
         try:
+            tokens = folder.split(os.sep)
+            moduleTokens = tokens[tokens.index(pluginName):] + [p]
+            moduleName = ".".join(moduleTokens)
             m = __import__(moduleName, fromlist="dummy")
             removeLessonModule(m)
         except:
@@ -87,17 +88,33 @@ def lessonsFolder():
 
     return folder
 
+def addLessonFolderFromLessonPluginFolder(name):
+    try:
+        f = os.path.join(lessonsFolder(), name, "__init__.py")
+        if os.path.exists(f):
+            m = imp.load_source(name, f)
+            addLessonModule(m)
+    except:
+        pass
+
+    if isYamlLessonFolder(lessonsFolder(), name):
+        lesson = lessonFromYamlFile(os.path.join(lessonsFolder(), name, "lesson.yaml"))
+        if lesson:
+            _addLesson(lesson)
+
+
 def installLessonsFromZipFile(path):
     with zipfile.ZipFile(path, "r") as z:
         z.extractall(lessonsFolder())
         lessons = list(set([os.path.split(os.path.dirname(x))[0] for x in z.namelist()]))
         for lesson in lessons:
-            addLessonsFolder(os.path.join(lessonsFolder(), lesson))
+            addLessonFolderFromLessonPluginFolder(lesson)
+
 
 def loadLessons():
     for folder in os.listdir(lessonsFolder()):
         if os.path.isdir(os.path.join(lessonsFolder(), folder)):
-            addLessonsFolder(os.path.join(lessonsFolder(), folder), "lessons")
+            addLessonFolderFromLessonPluginFolder(folder)
 
 def classFactory(iface):
     from .plugin import LessonsPlugin
