@@ -140,7 +140,7 @@ def install_devtools():
 @task
 @cmdopts([
     ('tests', 't', 'Package tests with plugin'),
-    ('nolessons', 'n', 'Do not package lessons with plugin')
+    ('lessons', 'n', 'Package lessons with plugin')
 ])
 def package(options):
     """Create plugin package
@@ -148,7 +148,7 @@ def package(options):
     builddocs(options)
     package_file = options.plugin.package_dir / ('%s.zip' % options.plugin.name)
     with zipfile.ZipFile(package_file, 'w', zipfile.ZIP_DEFLATED) as zf:
-        if hasattr(options.package, 'nolessons'):
+        if not hasattr(options.package, 'lessons'):
             options.plugin.excludes.extend(options.plugin.lessons)
         else:
             lessonsPath = os.path.abspath("./lessons/_lessonstemp")
