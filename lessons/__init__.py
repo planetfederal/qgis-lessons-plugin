@@ -88,33 +88,39 @@ def lessonsFolder():
 
     return folder
 
-def addLessonFolderFromLessonPluginFolder(name):
+def addLessonFolderFromLessonPluginFolder(group, lesson):
     try:
-        f = os.path.join(lessonsFolder(), name, "__init__.py")
+        f = os.path.join(lessonsFolder(), group, lesson, "__init__.py")
         if os.path.exists(f):
-            m = imp.load_source(name, f)
+            m = imp.load_source("%s.%s" % (group, lesson), f)
             addLessonModule(m)
     except:
         pass
 
-    if isYamlLessonFolder(lessonsFolder(), name):
-        lesson = lessonFromYamlFile(os.path.join(lessonsFolder(), name, "lesson.yaml"))
+    if isYamlLessonFolder(os.path.join(lessonsFolder(), group), lesson):
+        lesson = lessonFromYamlFile(os.path.join(lessonsFolder(), group, lesson, "lesson.yaml"))
         if lesson:
             _addLesson(lesson)
 
 
 def installLessonsFromZipFile(path):
+    group = os.path.basename(path).split(".")[0]
     with zipfile.ZipFile(path, "r") as z:
-        z.extractall(lessonsFolder())
+        folder = os.path.join(lessonsFolder(), group)
+        if not QDir(folder).exists():
+            QDir().mkpath(folder)
+        z.extractall(folder)
         lessons = list(set([os.path.split(os.path.dirname(x))[0] for x in z.namelist()]))
         for lesson in lessons:
-            addLessonFolderFromLessonPluginFolder(lesson)
+            addLessonFolderFromLessonPluginFolder(group, lesson)
 
 
 def loadLessons():
     for folder in os.listdir(lessonsFolder()):
         if os.path.isdir(os.path.join(lessonsFolder(), folder)):
-            addLessonFolderFromLessonPluginFolder(folder)
+            for subfolder in os.listdir(os.path.join(lessonsFolder(), folder)):
+                if os.path.isdir(os.path.join(lessonsFolder(), folder, subfolder)):
+                    addLessonFolderFromLessonPluginFolder(folder, subfolder)
 
 def classFactory(iface):
     from .plugin import LessonsPlugin
