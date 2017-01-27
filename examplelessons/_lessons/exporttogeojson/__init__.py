@@ -17,7 +17,7 @@ def setActiveLayer():
     iface.setActiveLayer(layer)
 
 lesson = Lesson("Export to geojson", "Basic lessons", "lesson.html")
-lesson.addStep("Set 'points' layer as active layer", "activelayer.html",
+lesson.addStep("Set 'points' layer as active layer", "activelayer.md",
                function = setActiveLayer, endcheck=isLayerActive, steptype=Step.MANUALSTEP)
 lesson.addMenuClickStep("Layer/Save As...")
 lesson.addStep("Save the file as geojson", "saveas.html", steptype=Step.MANUALSTEP)

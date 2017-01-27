@@ -13,6 +13,8 @@ from lessons.utils import execute
 from lessons.lesson import Step
 from lessons.lessonfinisheddialog import LessonFinishedDialog
 
+import markdown
+
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonwidget.ui'))
 
@@ -92,7 +94,9 @@ class LessonWidget(BASE, WIDGET):
             item.setBackground(Qt.green)
             if os.path.exists(step.description):
                 with open(step.description) as f:
-                        html = "".join(f.readlines())
+                    html = "".join(f.readlines())
+                    if step.description.endswith(".md"):
+                        html = markdown.markdown(html)
                 self.webView.document().setMetaInformation(QTextDocument.DocumentUrl,
                                                            QUrl.fromUserInput(step.description).toString())
                 self.webView.setHtml(html)
