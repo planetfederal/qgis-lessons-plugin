@@ -6,7 +6,7 @@ import re
 import time
 import shutil
 
-from qgis.PyQt.QtCore import QDir, QSettings, QThread, pyqtSignal, Qt
+from qgis.PyQt.QtCore import QDir, QSettings, Qt
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QMenu, QApplication
 
@@ -23,6 +23,7 @@ def layerFromName(name):
     for layer in layers:
         if layer.name() == name:
             return layer
+
 
 def loadLayer(filename, name = None):
     '''
@@ -42,6 +43,7 @@ def loadLayer(filename, name = None):
 
     return qgslayer
 
+
 def loadLayerNoCrsDialog(filename, name=None):
     '''
     Tries to load a layer from the given file
@@ -55,12 +57,14 @@ def loadLayerNoCrsDialog(filename, name=None):
     settings.setValue('/Projections/defaultBehaviour', prjSetting)
     return layer
 
+
 def getMenuPath(menu):
     path = []
     while isinstance(menu, QMenu):
         path.append(menu.title().replace("&",""))
         menu = menu.parent()
     return "/".join(path[::-1])
+
 
 def getAllMenus():
     def getActions(action, menu):
@@ -86,6 +90,7 @@ def getAllMenus():
 
     return menuActions
 
+
 def menuFromName(menuName):
     menuActions = getAllMenus()
     shortMenuName = re.match(r"(.*\/)?(.*\/.*)$",menuName).group(2)
@@ -94,9 +99,11 @@ def menuFromName(menuName):
         if re.match(r"(.*\/)?(.*\/.*)$",name).group(2) == shortMenuName:
             return menu, action
 
+
 def getMenuPaths():
     menuActions = getAllMenus()
     return [getMenuPath(menu) + "/" + action.text().replace("&","") for action,menu in menuActions]
+
 
 def lessonDataFolder(lessonFolderName):
     folder = os.path.join(os.path.expanduser("~"), "qgislessonsdata", lessonFolderName)
@@ -105,9 +112,11 @@ def lessonDataFolder(lessonFolderName):
 
     return QDir.toNativeSeparators(folder)
 
+
 def copyLessonData(filename, lessonFolderName):
     dest = os.path.join(lessonDataFolder(lessonFolderName), os.path.basename(filename))
     shutil.copy2(filename, dest)
+
 
 def unfoldMenu(menu, action):
     '''Unfolds a menu and all parent menus, and highlights an entry in that menu'''
@@ -119,6 +128,7 @@ def unfoldMenu(menu, action):
         m.setVisible(True)
     m.setActiveAction(action)
 
+
 def openProject(projectFile):
     folder = os.path.dirname(projectFile)
     projectName = os.path.basename(projectFile)
@@ -128,25 +138,6 @@ def openProject(projectFile):
     tempProjectFile = os.path.join(dest, projectName)
     iface.addProject(tempProjectFile)
 
-_dialog = None
-
-class ExecutorThread(QThread):
-
-    finished = pyqtSignal()
-
-    def __init__(self, func):
-        QThread.__init__(self, iface.mainWindow())
-        self.func = func
-        self.returnValue = None
-        self.exception = None
-
-    def run (self):
-        try:
-            self.returnValue = self.func()
-        except Exception as e:
-            self.exception = e
-        finally:
-            self.finished.emit()
 
 def execute(func):
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
