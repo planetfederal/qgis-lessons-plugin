@@ -51,15 +51,21 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="btnMove">
-        <property name="text">
+        <property name="toolTip">
          <string>Move to next step</string>
+        </property>
+        <property name="text">
+         <string>Next step</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnRunStep">
+        <property name="toolTip">
+         <string>Runs the current step for you</string>
+        </property>
         <property name="text">
-         <string>Run step</string>
+         <string>Solve step</string>
         </property>
        </widget>
       </item>
@@ -78,15 +84,21 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnRestart">
+        <property name="toolTip">
+         <string>Restart lesson from step one</string>
+        </property>
         <property name="text">
-         <string>Restart lesson</string>
+         <string>Restart</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnFinish">
+        <property name="toolTip">
+         <string>Quits current lesson</string>
+        </property>
         <property name="text">
-         <string>Quit lesson</string>
+         <string>Quit</string>
         </property>
        </widget>
       </item>
