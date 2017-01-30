@@ -6,7 +6,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QUrl, pyqtSignal
 from qgis.PyQt.QtGui import QIcon, QTextDocument
-from qgis.PyQt.QtWidgets import QListWidgetItem, QMessageBox, QListWidget
+from qgis.PyQt.QtWidgets import QListWidgetItem, QMessageBox, QListWidget, QAbstractItemView
 from qgis.utils import iface
 
 from lessons.utils import execute
@@ -92,6 +92,7 @@ class LessonWidget(BASE, WIDGET):
                 step.endsignal.connect(self.endSignalEmitted)
             item = self.listSteps.item(self.currentStep)
             item.setBackground(Qt.green)
+            self.listSteps.scrollToItem(item, QAbstractItemView.PositionAtCenter)
             if os.path.exists(step.description):
                 with open(step.description) as f:
                     html = "".join(f.readlines())
