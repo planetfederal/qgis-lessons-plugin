@@ -9,6 +9,7 @@ import difflib
 from qgis.core import QgsMessageLog
 
 from lessons.utils import openProject, menuFromName, execute, getMenuPaths
+import shutil
 
 class Step(object):
 
@@ -92,6 +93,9 @@ class Lesson(object):
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
         self.addStep(name, description, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
+
+    def uninstall(self):
+        shutil.rmtree(self.folder, True)
 
 def lessonFromYamlFile(f):
     with open(f) as stream:

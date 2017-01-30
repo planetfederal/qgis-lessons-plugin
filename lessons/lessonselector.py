@@ -8,7 +8,7 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon, QTextDocument
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox
 
-from lessons import lessons
+from lessons import lessons, _removeLesson
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonselector.ui'))
@@ -42,13 +42,15 @@ class LessonSelector(BASE, WIDGET):
 
         self.lessonsTree.expandAll()
 
-        self.lessonsTree.currentItemChanged.connect(self.currentItemChanged)
+
         self.lessonsTree.itemDoubleClicked.connect(self.itemDoubleClicked)
 
-        self.buttonBox.accepted.connect(self.okPressed)
-        self.buttonBox.rejected.connect(self.cancelPressed)
+        self.btnRunLesson.clicked.connect(self.okPressed)
+        self.btnRemove.clicked.connect(self.remove)
 
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.btnRemove.setEnabled(False)
+
+        self.lessonsTree.currentItemChanged.connect(self.currentItemChanged)
 
     def itemDoubleClicked(self, item, i):
         if hasattr(item, "lesson"):
@@ -57,9 +59,11 @@ class LessonSelector(BASE, WIDGET):
 
     def currentItemChanged(self):
         item = self.lessonsTree.currentItem()
+        print item
         if item:
             if hasattr(item, "lesson"):
-                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+                self.btnRemove.setEnabled(True)
+                self.btnRunLesson.setEnabled(True)
                 if os.path.exists(item.lesson.description):
                     with open(item.lesson.description) as f:
                         html = "".join(f.readlines())
@@ -69,11 +73,21 @@ class LessonSelector(BASE, WIDGET):
                 else:
                     self.webView.setHtml("<p>%s</p>" % item.lesson.description)
             else:
-                self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+                self.btnRunLesson.setEnabled(False)
+                self.btnRemove.setEnabled(False)
                 self.webView.setHtml("")
+        else:
+            self.btnRemove.setEnabled(False)
 
-    def cancelPressed(self):
-        self.close()
+    def remove(self):
+        lesson = self.lessonsTree.selectedItems()[0].lesson
+        _removeLesson(lesson)
+        item = self.lessonsTree.currentItem()
+        parent = item.parent()
+        parent.takeChild(parent.indexOfChild(item))
+        if parent.childCount() == 0:
+            self.lessonsTree.takeTopLevelItem(self.lessonsTree.indexOfChild(parent))
+        lesson.uninstall()
 
     def okPressed(self):
         self.lesson = self.lessonsTree.selectedItems()[0].lesson
