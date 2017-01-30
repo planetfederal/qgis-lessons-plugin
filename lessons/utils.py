@@ -145,3 +145,13 @@ def execute(func):
         return func()
     finally:
         QApplication.restoreOverrideCursor()
+
+
+def layerActive(layerName):
+    layer = iface.activeLayer()
+    return layer is not None and layer.name() == layerName
+
+
+def setActiveLayer(layerName):
+    layer = layerFromName(layerName)
+    iface.setActiveLayer(layer)
