@@ -4,21 +4,13 @@
 # This code is licensed under the GPL 2.0 license.
 #
 from lessons.lesson import Lesson, Step
-from lessons import utils
+from lessons.utils import setActiveLayer, layerActive
 from qgis.utils import iface
 from lessons import addLessonModule
 
-def isLayerActive():
-    layer = iface.activeLayer()
-    return layer is not None and layer.name() == "points"
-
-def setActiveLayer():
-    layer = utils.layerFromName("points")
-    iface.setActiveLayer(layer)
-
 lesson = Lesson("Export to geojson", "Basic lessons", "lesson.html")
 lesson.addStep("Set 'points' layer as active layer", "activelayer.md",
-               function = setActiveLayer, endcheck=isLayerActive, steptype=Step.MANUALSTEP)
+               function=lambda: setActiveLayer("points"), endcheck=lambda:layerActive("points"), steptype=Step.MANUALSTEP)
 lesson.addMenuClickStep("Layer/Save As...")
 lesson.addStep("Save the file as geojson", "saveas.html", steptype=Step.MANUALSTEP)
 lesson.addNextLesson("Basic lessons", "Export to geojson (yaml example)")
