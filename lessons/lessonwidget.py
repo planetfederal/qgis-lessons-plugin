@@ -13,7 +13,7 @@ from lessons.utils import execute
 from lessons.lesson import Step
 from lessons.lessonfinisheddialog import LessonFinishedDialog
 
-import markdown
+import markdown, codecs
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonwidget.ui'))
@@ -94,7 +94,7 @@ class LessonWidget(BASE, WIDGET):
             item.setBackground(Qt.green)
             self.listSteps.scrollToItem(item, QAbstractItemView.PositionAtCenter)
             if os.path.exists(step.description):
-                with open(step.description) as f:
+                with codecs.open(step.description, encoding="utf-8") as f:
                     html = "".join(f.readlines())
                 if step.description.endswith(".md"):
                     html = markdown.markdown(html)
