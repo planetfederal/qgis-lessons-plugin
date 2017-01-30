@@ -37,6 +37,11 @@ class Lesson(object):
         self.cleanup = lambda: None
         self.nextLessons = []
         self.description = self.resolveFile(description)
+        self.style = ""
+        path = os.path.join(self.folder, "style.css")
+        if os.path.exists(path):
+            with open(path) as f:
+                self.style = "<style>\n" + "".join(f.readlines()) + "\n</style>\n"
         path = os.path.join(self.folder, "project.qgs")
         if os.path.exists(path):
             self.addStep("Open project", "Open project", lambda: openProject(path))
