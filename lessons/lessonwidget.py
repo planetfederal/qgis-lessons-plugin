@@ -95,8 +95,9 @@ class LessonWidget(BASE, WIDGET):
             if os.path.exists(step.description):
                 with open(step.description) as f:
                     html = "".join(f.readlines())
-                    if step.description.endswith(".md"):
-                        html = markdown.markdown(html)
+                if step.description.endswith(".md"):
+                    html = markdown.markdown(html)
+                html = self.lesson.style + html
                 self.webView.document().setMetaInformation(QTextDocument.DocumentUrl,
                                                            QUrl.fromUserInput(step.description).toString())
                 self.webView.setHtml(html)
