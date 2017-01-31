@@ -9,6 +9,7 @@ from qgis.PyQt.QtGui import QIcon, QTextDocument
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox
 
 from lessons import lessons, _removeLesson
+from PyQt4.QtGui import QMessageBox
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonselector.ui'))
@@ -52,6 +53,8 @@ class LessonSelector(BASE, WIDGET):
 
         self.lessonsTree.currentItemChanged.connect(self.currentItemChanged)
 
+        self.lessonsTree.setCurrentItem(self.lessonsTree.invisibleRootItem().child(0).child(0))
+
     def itemDoubleClicked(self, item, i):
         if hasattr(item, "lesson"):
             self.lesson = item.lesson
@@ -59,9 +62,9 @@ class LessonSelector(BASE, WIDGET):
 
     def currentItemChanged(self):
         item = self.lessonsTree.currentItem()
-        print item
         if item:
             if hasattr(item, "lesson"):
+                self.btnRemove.setText("Uninstall lesson")
                 self.btnRemove.setEnabled(True)
                 self.btnRunLesson.setEnabled(True)
                 if os.path.exists(item.lesson.description):
@@ -74,20 +77,40 @@ class LessonSelector(BASE, WIDGET):
                     self.webView.setHtml("<p>%s</p>" % item.lesson.description)
             else:
                 self.btnRunLesson.setEnabled(False)
-                self.btnRemove.setEnabled(False)
+                self.btnRemove.setText("Uninstall lessons group")
+                self.btnRemove.setEnabled(True)
                 self.webView.setHtml("")
         else:
             self.btnRemove.setEnabled(False)
 
     def remove(self):
-        lesson = self.lessonsTree.selectedItems()[0].lesson
-        _removeLesson(lesson)
         item = self.lessonsTree.currentItem()
-        parent = item.parent()
-        parent.takeChild(parent.indexOfChild(item))
-        if parent.childCount() == 0:
-            self.lessonsTree.takeTopLevelItem(self.lessonsTree.indexOfChild(parent))
-        lesson.uninstall()
+        if hasattr(item, "lesson"):
+            reply = QMessageBox.question(None,
+                                     "Confirmation",
+                                     'Are you sure you want to uninstall this lesson?',
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                _removeLesson(item.lesson)
+                item = self.lessonsTree.currentItem()
+                parent = item.parent()
+                parent.takeChild(parent.indexOfChild(item))
+                if parent.childCount() == 0:
+                    self.lessonsTree.takeTopLevelItem(self.lessonsTree.indexOfTopLevelItem(parent))
+                item.lesson.uninstall()
+        else:
+            reply = QMessageBox.question(None,
+                         "Confirmation",
+                         'Are you sure you want to uninstall this group of lessons?',
+                         QMessageBox.Yes | QMessageBox.No,
+                         QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                for i in range(item.childCount()):
+                    child = item.child(i)
+                    _removeLesson(child.lesson)
+                    child.lesson.uninstall()
+                self.lessonsTree.takeTopLevelItem(self.lessonsTree.indexOfTopLevelItem(item))
 
     def okPressed(self):
         self.lesson = self.lessonsTree.selectedItems()[0].lesson
