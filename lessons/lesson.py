@@ -7,6 +7,7 @@ import traceback
 import yaml
 import difflib
 import shutil
+import codecs
 
 from qgis.core import QgsMessageLog
 
@@ -50,7 +51,7 @@ class Lesson(object):
         self.style = ""
         path = os.path.join(os.path.dirname(self.folder), "style.css")
         if os.path.exists(path):
-            with open(path) as f:
+            with codecs.open(path, encoding="utf-8") as f:
                 self.style = "<style>\n" + "".join(f.readlines()) + "\n</style>\n"
         path = os.path.join(self.folder, "project.qgs")
         if os.path.exists(path):
@@ -111,7 +112,7 @@ class Lesson(object):
         shutil.rmtree(self.folder, True)
 
 def lessonFromYamlFile(f):
-    with open(f) as stream:
+    with codecs.open(f, encoding="utf-8") as stream:
         lessonDict = yaml.load(stream)
     lesson = Lesson(lessonDict["name"], lessonDict["group"], lessonDict["description"],
                     os.path.dirname(f), lessonDict.get("version", [None, None]))
