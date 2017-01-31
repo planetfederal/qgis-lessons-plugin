@@ -6,10 +6,11 @@ import os
 import traceback
 import yaml
 import difflib
+import shutil
+
 from qgis.core import QgsMessageLog
 
-from lessons.utils import openProject, menuFromName, execute, getMenuPaths
-import shutil
+from lessons.utils import openProject, menuFromName, execute, getMenuPaths, qgisLocale
 
 def _ensureList(obj):
     if obj is None or  isinstance(obj, list):
@@ -64,10 +65,13 @@ class Lesson(object):
     def resolveFile(self, f):
         if f is None:
             f = ""
-        elif not os.path.exists(f):
-            path = os.path.join(self.folder, f)
-            if os.path.exists(path):
-                f = path
+        else:
+            for i in [qgisLocale(), "en"]:
+                if not os.path.exists(os.path.join(i, f)):
+                    path = os.path.join(self.folder, i, f)
+                    if os.path.exists(path):
+                        f = path
+                        break
         return f
 
     def addStep(self, name, description, function=None, prestep=None, endsignals=None,
@@ -100,6 +104,7 @@ class Lesson(object):
 
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
+
         self.addStep(name, description, None, None, menu.triggered, checkMenu, None, Step.MANUALSTEP)
 
     def uninstall(self):

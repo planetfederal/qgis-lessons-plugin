@@ -6,7 +6,7 @@ import re
 import time
 import shutil
 
-from qgis.PyQt.QtCore import QDir, QSettings, Qt
+from qgis.PyQt.QtCore import QDir, QSettings, Qt, QLocale
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QMenu, QApplication
 
@@ -179,6 +179,15 @@ def execute(func):
         return func()
     finally:
         QApplication.restoreOverrideCursor()
+
+
+def qgisLocale():
+    settings = QSettings();
+    overrideLocale = settings.value("locale/overrideFlag", False, bool)
+    if overrideLocale:
+        return settings.value("locale/userLocale", "")
+    else:
+        return QLocale.system().name()[:2]
 
 
 def layerActive(layerName):
