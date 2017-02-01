@@ -87,6 +87,9 @@ class LessonWidget(BASE, WIDGET):
             else:
                 self.finishLesson()
         else:
+            if self.currentStep == len(self.lesson.steps) - 1:
+                self.btnMove.setText(self.tr("Finish"))
+
             step = self.lesson.steps[self.currentStep]
             if step.endsignal is not None:
                 step.endsignal.connect(self.endSignalEmitted)
