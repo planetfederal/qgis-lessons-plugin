@@ -13,7 +13,8 @@ from lessons.utils import execute
 from lessons.lesson import Step
 from lessons.lessonfinisheddialog import LessonFinishedDialog
 
-import markdown, codecs
+import markdown
+import codecs
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonwidget.ui'))

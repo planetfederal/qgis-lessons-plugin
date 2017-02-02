@@ -8,8 +8,9 @@ from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QIcon, QTextDocument
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox
 
-from lessons import lessons, _removeLesson
-from PyQt4.QtGui import QMessageBox
+from lessons import lessons, _removeLesson, groups
+import codecs
+import markdown
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonselector.ui'))
@@ -31,6 +32,7 @@ class LessonSelector(BASE, WIDGET):
         for group, groupLessons in allLessons.items():
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
+            groupItem.description = groups.get(group, "")
             for lesson in groupLessons:
                 lessonItem = QTreeWidgetItem()
                 lessonItem.lesson = lesson
@@ -46,8 +48,10 @@ class LessonSelector(BASE, WIDGET):
 
         self.lessonsTree.itemDoubleClicked.connect(self.itemDoubleClicked)
 
+        self.btnRunLesson.setDefault(True)
         self.btnRunLesson.clicked.connect(self.okPressed)
         self.btnRemove.clicked.connect(self.remove)
+        self.btnClose.clicked.connect(self.close)
 
         self.btnRemove.setEnabled(False)
 
@@ -79,7 +83,17 @@ class LessonSelector(BASE, WIDGET):
                 self.btnRunLesson.setEnabled(False)
                 self.btnRemove.setText("Uninstall lessons group")
                 self.btnRemove.setEnabled(True)
-                self.webView.setHtml("")
+                if os.path.exists(item.description):
+                    with codecs.open(item.description, encoding="utf-8") as f:
+                        html = "".join(f.readlines())
+                    if item.description.endswith(".md"):
+                        html = markdown.markdown(html)
+                    self.webView.document().setMetaInformation(QTextDocument.DocumentUrl,
+                                                               QUrl.fromUserInput(item.description).toString())
+                else:
+                    html = item.description
+                self.webView.setHtml(html)
+
         else:
             self.btnRemove.setEnabled(False)
 

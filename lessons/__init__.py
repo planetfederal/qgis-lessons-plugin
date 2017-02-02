@@ -11,6 +11,11 @@ from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
 
 lessons = []
+groups = {}
+
+def addGroup(name, description):
+    global groups
+    groups[name] = description
 
 def _addLesson(toAdd):
     for lesson in lessons:
@@ -80,27 +85,12 @@ def lessonFromName(group, name):
         if lesson.group == group and lesson.name == name:
             return lesson
 
-
 def lessonsFolder():
     folder = os.path.join(os.path.dirname(__file__), '_lessons')
     if not QDir(folder).exists():
         QDir().mkpath(folder)
 
     return folder
-
-def addLessonFolderFromLessonPluginFolder(group, lesson):
-    try:
-        f = os.path.join(lessonsFolder(), group, lesson, "__init__.py")
-        if os.path.exists(f):
-            m = imp.load_source("%s.%s" % (group, lesson), f)
-            addLessonModule(m)
-    except:
-        pass
-
-    if isYamlLessonFolder(os.path.join(lessonsFolder(), group), lesson):
-        lesson = lessonFromYamlFile(os.path.join(lessonsFolder(), group, lesson, "lesson.yaml"))
-        if lesson:
-            _addLesson(lesson)
 
 
 def installLessonsFromZipFile(path):
@@ -110,17 +100,32 @@ def installLessonsFromZipFile(path):
         if not QDir(folder).exists():
             QDir().mkpath(folder)
         z.extractall(folder)
-        lessons = list(set([os.path.split(os.path.dirname(x))[0] for x in z.namelist()]))
-        for lesson in lessons:
-            addLessonFolderFromLessonPluginFolder(group, lesson)
+
+        loadLessons()
 
 
 def loadLessons():
     for folder in os.listdir(lessonsFolder()):
         if os.path.isdir(os.path.join(lessonsFolder(), folder)):
+            groupFiles = [os.path.join(lessonsFolder(), folder, f) for f in ["group.html", "group.md"]]
+            for groupFile in groupFiles:
+                if os.path.exists(groupFile):
+                    groups[folder.replace("_", " ")] = groupFile
+                    break
             for subfolder in os.listdir(os.path.join(lessonsFolder(), folder)):
                 if os.path.isdir(os.path.join(lessonsFolder(), folder, subfolder)):
-                    addLessonFolderFromLessonPluginFolder(folder, subfolder)
+                    try:
+                        f = os.path.join(lessonsFolder(), folder, subfolder, "__init__.py")
+                        if os.path.exists(f):
+                            m = imp.load_source("%s.%s" % (folder, subfolder), f)
+                            addLessonModule(m)
+                    except:
+                        pass
+                    if isYamlLessonFolder(os.path.join(lessonsFolder(), folder), subfolder):
+                        lesson = lessonFromYamlFile(os.path.join(lessonsFolder(), folder, subfolder, "lesson.yaml"))
+                        if lesson:
+                            _addLesson(lesson)
+
 
 def classFactory(iface):
     from .plugin import LessonsPlugin
