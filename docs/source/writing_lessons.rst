@@ -18,12 +18,13 @@ Lessons are usually deployed in lessons groups or packages. Therefore is advisab
     |-- lesson_1/
     |   |-- __init__py (or lesson.yaml)
     |   |-- project.qgs
-    |   |-- [html files and images describing the lesson and each step in it]
+    |   |-- [html or markdown files and images describing the lesson and each step in it]
     |   |-- data/
     |   |   |-- [data files used in the lesson]
     |
     |-+ lesson_2/
     |-+ lesson_3/
+    |-+ group.html (or group.md)
 
 
 All these elements are explained in the next sections of this document.
@@ -57,6 +58,12 @@ Instead of a string with the description, you can pass the name of an HTML file 
 
 
 There is no need to add the full path to the HTML file. As long as the file is in the same folder as the ```__init__.py``` file, the full path will be correctly resolved at runtime.
+
+You can also use Markdown files (with the ```md``` extension) instead of HTML files. They will be converted to HTML code automatically by the lessons plugin itself.
+
+You can provide a group description using the ```addGroup(name, description)``` method from the ```lessons``` module. The description, as in the case of a lesson description, can be a text  block with html code, or the path to an existing HTML or Markdown file.
+
+You can also add a ```group.html``` or ```group.md``` file in the group folder, and it will be automatically asigned as the description file for the group. The group name is taken from the parent folder name (replacing underscores with spaces), so you should make sure that this folder name matches the declared group name of each of the lessons under it.
 
 .. note::
 
