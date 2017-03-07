@@ -50,7 +50,7 @@ class LessonsPlugin(object):
 
     def initGui(self):
         lessonIcon = QIcon(os.path.dirname(__file__) + '/lesson.gif')
-        self.action = QAction(lessonIcon, "Start lessons", self.iface.mainWindow())
+        self.action = QAction(lessonIcon, "Open Lessons Library...", self.iface.mainWindow())
         self.action.triggered.connect(self.start)
         self.iface.addPluginToMenu(u"Lessons", self.action)
         helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')

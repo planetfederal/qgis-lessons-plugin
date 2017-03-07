@@ -15,6 +15,7 @@ from lessons.lessonfinisheddialog import LessonFinishedDialog
 
 import markdown
 import codecs
+from functools import partial
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonwidget.ui'))
@@ -62,15 +63,19 @@ class LessonWidget(BASE, WIDGET):
             return
         item = self.listSteps.item(self.currentStep)
         item.setBackground(Qt.white)
-        if step.endsignal is not None:
-            step.endsignal.disconnect(self.endSignalEmitted )
+        if step.endsignals is not None:
+            for i, sig in enumerate(step.endsignals):
+                sig.disconnect(self.listeners[i])
         self.currentStep += 1
         self.moveToNextStep()
 
-    def endSignalEmitted(self, *args):
-        step = self.lesson.steps[self.currentStep]
-        if step.endsignalcheck is None or step.endsignalcheck(*args):
-            self.stepFinished()
+    def endSignalEmitted(self, i):
+        def _endSignalEmitted(i, *args):
+            step = self.lesson.steps[self.currentStep]
+            if step.endsignalchecks is None or step.endsignalchecks[i](*args):
+                self.stepFinished()
+
+        return partial(_endSignalEmitted, i)
 
     def restartLesson(self):
         for i in range(self.listSteps.count()):
@@ -92,8 +97,11 @@ class LessonWidget(BASE, WIDGET):
                 self.btnMove.setText(self.tr("Finish"))
 
             step = self.lesson.steps[self.currentStep]
-            if step.endsignal is not None:
-                step.endsignal.connect(self.endSignalEmitted)
+            if step.endsignals is not None:
+                self.listeners  = []
+                for i, sig in enumerate(step.endsignals):
+                    self.listeners.append(self.endSignalEmitted(i))
+                    sig.connect(self.listeners[-1])
             item = self.listSteps.item(self.currentStep)
             item.setBackground(Qt.green)
             self.listSteps.scrollToItem(item, QAbstractItemView.PositionAtCenter)
@@ -113,12 +121,12 @@ class LessonWidget(BASE, WIDGET):
                 execute(step.prestep)
             if step.function is not None:
                 self.btnRunStep.setEnabled(step.steptype != Step.AUTOMATEDSTEP)
-                self.btnMove.setEnabled(step.steptype != Step.AUTOMATEDSTEP and step.endsignal is None)
+                self.btnMove.setEnabled(step.steptype != Step.AUTOMATEDSTEP and step.endsignals is None)
                 if step.steptype == Step.AUTOMATEDSTEP:
                     self.runCurrentStepFunction()
             else:
                 self.btnRunStep.setEnabled(False)
-                self.btnMove.setEnabled(step.endsignal is None)
+                self.btnMove.setEnabled(step.endsignals is None)
 
     def finishLesson(self):
         self.setVisible(False)

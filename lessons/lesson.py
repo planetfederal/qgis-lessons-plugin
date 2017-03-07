@@ -11,19 +11,26 @@ from qgis.core import QgsMessageLog
 from lessons.utils import openProject, menuFromName, execute, getMenuPaths
 import shutil
 
+def _ensureList(obj):
+    if obj is None or  isinstance(obj, list):
+        return obj
+    else:
+        return [obj]
+
 class Step(object):
 
     MANUALSTEP, AUTOMATEDSTEP = list(range(2))
 
-    def __init__(self, name, description, function=None, prestep=None, endsignal=None,
-                 endsignalcheck=None, endcheck=lambda:True, steptype=1):
+
+    def __init__(self, name, description, function=None, prestep=None, endsignals=None,
+                 endsignalchecks=None, endcheck=lambda:True, steptype=1):
         self.name = name
         self.description = description or ""
         self.function = function
         self.prestep = prestep
         self.endcheck = endcheck
-        self.endsignal = endsignal
-        self.endsignalcheck = endsignalcheck
+        self.endsignals = _ensureList(endsignals)
+        self.endsignalchecks = _ensureList(endsignalchecks)
         self.steptype = steptype
 
 class Lesson(object):
@@ -62,14 +69,14 @@ class Lesson(object):
                 f = path
         return f
 
-    def addStep(self, name, description, function=None, prestep=None, endsignal=None,
-                endsignalcheck=None, endcheck=lambda:True, steptype=1):
+    def addStep(self, name, description, function=None, prestep=None, endsignals=None,
+                endsignalchecks=None, endcheck=lambda:True, steptype=1):
         description = self.resolveFile(description)
         if function is not None:
             _function = lambda: execute(function)
         else:
             _function = None
-        step = Step(name, description, _function, prestep, endsignal, endsignalcheck, endcheck, steptype)
+        step = Step(name, description, _function, prestep, endsignals, endsignalchecks, endcheck, steptype)
         self.steps.append(step)
 
     def addMenuClickStep(self, menuName, description=None):
