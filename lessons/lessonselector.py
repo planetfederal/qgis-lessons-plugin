@@ -4,13 +4,14 @@ import os
 from collections import defaultdict
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtGui import QIcon, QTextDocument
-from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox
+from qgis.PyQt.QtCore import QUrl, Qt
+from qgis.PyQt.QtGui import QIcon, QTextDocument, QCursor, QApplication
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox, QFileDialog, QMessageBox
 
-from lessons import lessons, _removeLesson, groups
+from lessons import lessons, _removeLesson, groups, installLessonsFromZipFile
 import codecs
 import markdown
+
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'lessonselector.ui'))
@@ -24,10 +25,28 @@ class LessonSelector(BASE, WIDGET):
 
         self.lesson = None
 
+        self.fillTree()
+
+        self.lessonsTree.itemDoubleClicked.connect(self.itemDoubleClicked)
+
+        self.btnRunLesson.setDefault(True)
+        self.btnRunLesson.clicked.connect(self.okPressed)
+        self.btnRemove.clicked.connect(self.remove)
+        self.btnClose.clicked.connect(self.close)
+        self.btnAdd.clicked.connect(self.addLessons)
+
+        self.btnRemove.setEnabled(False)
+
+        self.lessonsTree.currentItemChanged.connect(self.currentItemChanged)
+
+        self.lessonsTree.setCurrentItem(self.lessonsTree.invisibleRootItem().child(0).child(0))
+
+    def fillTree(self):
         allLessons = defaultdict(list)
         for lesson in lessons:
             allLessons[lesson.group].append(lesson)
 
+        self.lessonsTree.clear()
         lessonIcon = QIcon(os.path.dirname(__file__) + '/lesson.gif')
         for group, groupLessons in allLessons.items():
             groupItem = QTreeWidgetItem()
@@ -44,20 +63,6 @@ class LessonSelector(BASE, WIDGET):
         self.lessonsTree.sortItems(0, 0)
 
         self.lessonsTree.expandAll()
-
-
-        self.lessonsTree.itemDoubleClicked.connect(self.itemDoubleClicked)
-
-        self.btnRunLesson.setDefault(True)
-        self.btnRunLesson.clicked.connect(self.okPressed)
-        self.btnRemove.clicked.connect(self.remove)
-        self.btnClose.clicked.connect(self.close)
-
-        self.btnRemove.setEnabled(False)
-
-        self.lessonsTree.currentItemChanged.connect(self.currentItemChanged)
-
-        self.lessonsTree.setCurrentItem(self.lessonsTree.invisibleRootItem().child(0).child(0))
 
     def itemDoubleClicked(self, item, i):
         if hasattr(item, "lesson"):
@@ -96,6 +101,16 @@ class LessonSelector(BASE, WIDGET):
 
         else:
             self.btnRemove.setEnabled(False)
+
+    def addLessons(self):
+        ret = QFileDialog.getOpenFileName(self, "Select lessons ZIP file" , "", '*.zip')
+        if ret:
+            try:
+                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+                installLessonsFromZipFile(ret)
+                self.fillTree()
+            finally:
+                QApplication.restoreOverrideCursor()
 
     def remove(self):
         item = self.lessonsTree.currentItem()
