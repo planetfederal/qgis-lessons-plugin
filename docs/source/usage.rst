@@ -3,53 +3,150 @@
 Usage
 =====
 
-Start lessons
--------------
+The Lessons Library
+-------------------
 
-#. To open a lesson, go to :menuselection:`Plugins --> Lessons --> Start Lesson`. The :guilabel:`Lesson selector` will show up.
+To open the :guilabel:`Lessons Library`, go to :menuselection:`Plugins -->
+Lessons --> Open Lessons Library...`.
 
-   .. figure:: img/lesson_selector.png
+.. figure:: img/lessons_library.png
 
-#. The lessons are organized in groups. If necessary, click the cross next to the group's name to expand its lessons list.
+The left-hand panel (1) lists all available lessons organized by thematic
+groups. If necessary, click the cross icon next to the group's name to show
+the lessons inside.
 
-#. Click one of the lessons. On the right side of the dialog, a description of the lesson will show its purpose and objectives, the estimated time for completions and the lesson's author.
+Upon selecting a lesson (by clicking its name in the list) the right-hand
+panel (2) shows a small description of the lesson's content, estimated
+time of completion, and author.
 
-   .. figure:: img/lesson_selected.png
+In the dialog's bottom-right corner there is a set of buttons (3):
 
-#. Click :guilabel:`OK` to start the selected lesson.
+* **Add lessons...** - To install lessons from ZIP package;
+* **Uninstall lesson/group** - Deletes the selected lesson or group of lessons;
+* **Run lesson** - Starts the selected lesson;
+* **Close** - Closes the :guilabel:`Lessons Library` dialog.
+
+Install new lessons
+-------------------
+
+There are three ways of adding new lessons to the :guilabel:`Lesson Library`:
+
+* Using the Boundless Connect plugin;
+* From a zip package;
+* Through other plugins.
+
+
+Using Boundless Connect plugin
+..............................
+
+You can use the search feature of the `Boundless Connect panel <https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html#searching-plugins-and-other-resources>`_ to find, download and
+install lessons groups.
+
+Filter the search results by choosing ``Lessons`` in the :guilabel:`Search
+for` Drop-down menu.
+
+Type the name or subject of the lessons group you are seeking for (e.g.,
+``general``) and click :guilabel:`Search`. The list of matching lessons
+groups shows up. Click one of the listed items to install it in the
+:guilabel:`Lessons Library`.
+
+.. figure:: img/install_from_connect.png
+
+Once the download and installation finishes, a message in the top of
+the map canvas informs that **"lessons were correctly installed"**.
+
+From ZIP package
+................
+
+In the :guilabel:`Lessons Library` (:menuselection:`Plugins -->
+Lessons --> Open Lessons Library`), click the :guilabel:`Add lessons...`
+button. Browse to and select the ZIP package and click :guilabel:`Open`.
+After it, the lessons in the ZIP package will become available in the
+:guilabel:`Lessons Library`.
+
+.. figure:: img/install_from_zip.png
+
+Through other plugins
+.....................
+
+Some plugins can automatically install new lessons. For example, upon
+installation of `Boundless's Geogig plugin<http://boundlessgeo.github.io/qgis-plugins-documentation/geogiglight/index.html>`_
+, a new group of lessons will become available in lessons library.
+
+.. figure:: img/geogig_lessons.png
+
+Uninstall lessons
+-----------------
+
+To uninstall a lesson, open the :guilabel:`Lessons
+Library` (:menuselection:`Plugins --> Lessons --> Open Lessons Library`),
+select a lesson from the list and click :guilabel:`Uninstall lesson`.
+
+.. figure:: img/uninstall_lesson.png
+
+A message requests you to confirm the uninstall action. Click :guilabel:`Yes`.
+
+.. figure:: img/uninstall_confirmation.png
+
+You can also uninstall a group of lessons by selecting the group's name in
+the lessons list panel and click :guilabel:`Uninstall lessons group`.
+
+.. warning::
+
+   Upon uninstall, the lesson or lessons group will be completely removed from
+   your disk. Make sure you have a way to reinstall them if you need to.
 
 Lessons Panel
 -------------
 
-When a lesson starts, the :guilabel:`Lessons Panel` will be on the right side of the QGIS's window. The :guilabel:`Lessons Panel` includes: a Lesson's steps index (1) to track the lesson's progress, a description window (2) to show the current step's instructions, and a button bar (3).
+By default, when a lesson starts, the :guilabel:`Lessons Panel` will be on the
+right side of the QGIS's window. The :guilabel:`Lessons Panel` includes a
+Lesson's steps index (1) to track the lesson's progress, a description
+window (2) to show the current step's instructions, and a button bar (3).
 
 .. figure:: img/lesson_panel.png
 
 The following buttons compose the button bar:
 
-* **Move to next step** - To go to the next lesson's step.
-* **Run step** - Helps performing the steps instructions (not always available).
-* **Restart lesson** - Resets the project and cleans all the lesson's progress made so far.
-* **Quit lesson** - Cleans the lesson's progress and closes the :guilabel:`Lessons Panel`, but keeps the project loaded.
+* **Next step** - To go to the next lesson's step.
+* **Solve step** - Helps to perform the steps instructions (not always
+  available).
+* **Restart** - Resets the project and cleans all the lesson's progress made
+  so far.
+* **Quit** - Cleans the lesson's progress and closes the :guilabel:`Lessons
+  Panel`, but keeps the project loaded.
 
 Following a lesson
 ------------------
 
-Generally, the lessons will open a prepared project with all the necessary data already prepared. Unless the lesson is about loading data, you should never need to add data yourself.
+At the start, the lessons open a prepared project with all the necessary data.
+Unless the lesson is about loading data, you should never need to add data
+yourself.
 
-For each lesson's step, follow the instructions in the description window. When you have finished executing those instructions, click :guilabel:`Move to next step`.
+For each of the lesson's steps, follow the instructions in the description
+window. When you have finished executing those instructions, click
+:guilabel:`Next step`.
 
-Some lessons' steps won't let you move to the next step if you haven't finished the current step's instructions correctly. In those cases a message will pop up, asking you to review and execute the instructions.
+Some steps will not let you move to the next one until you finished the
+current step's instructions correctly. In those cases a message pops up,
+asking you to review and execute the instructions.
 
 .. figure:: img/warning_message.png
 
-Some steps will move to the next step automatically as soon as you complete the instructions. The step’s description will inform you of that. Typically, this is used in steps that ask you to click a menu item.
+Some steps will move to the next step automatically as soon as you complete the
+instructions. The step’s description will inform you of that. Typically, this
+is used in steps that ask you to click a menu item, or will open a
+blocking dialog.
 
 .. figure:: img/click_menu.png
 
-In some lessons' steps, if you get stuck while following the instructions, you can click :guilabel:`Run step`. This functionality will help you perform the step instructions, either by executing it for you or by showing how to do it.
+In some lessons' steps, if you get stuck while following the instructions,
+you can click :guilabel:`Solve step`. This functionality will help you perform
+the step's instructions, either by executing it for you or by showing how to
+do it.
 
-When you have finished all steps of the lesson, a dialog will show up congratulating you for the achievement. In that dialog, you can either start the following suggested lesson or close the dialog and the lessons panel.
+When you have finished all steps of a lesson, a dialog shows up congratulating
+you for the achievement. In that same dialog, you can either start one of the
+suggested lesson or close the dialog and the :guilabel:`Lessons panel`.
 
 .. figure:: img/congratulations_message.png
-
