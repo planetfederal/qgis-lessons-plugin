@@ -39,7 +39,10 @@ class LessonSelector(BASE, WIDGET):
 
         self.lessonsTree.currentItemChanged.connect(self.currentItemChanged)
 
-        self.lessonsTree.setCurrentItem(self.lessonsTree.invisibleRootItem().child(0).child(0))
+        try:
+            self.lessonsTree.setCurrentItem(self.lessonsTree.invisibleRootItem().child(0).child(0))
+        except AttributeError:
+            self.currentItemChanged()
 
     def fillTree(self):
         allLessons = defaultdict(list)
@@ -101,6 +104,7 @@ class LessonSelector(BASE, WIDGET):
 
         else:
             self.btnRemove.setEnabled(False)
+            self.btnRunLesson.setEnabled(False)
 
     def addLessons(self):
         ret = QFileDialog.getOpenFileName(self, "Select lessons ZIP file" , "", '*.zip')
