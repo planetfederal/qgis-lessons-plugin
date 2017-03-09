@@ -70,8 +70,8 @@ Through other plugins
 .....................
 
 Some plugins can automatically install new lessons. For example, upon
-installation of `Boundless's Geogig plugin<http://boundlessgeo.github.io/qgis-plugins-documentation/geogiglight/index.html>`_
-, a new group of lessons will become available in lessons library.
+installation of `Boundless's Geogig plugin <http://boundlessgeo.github.io/qgis-plugins-documentation/geogiglight/index.html>`_,
+a new group of lessons will become available in lessons library.
 
 .. figure:: img/geogig_lessons.png
 
@@ -147,6 +147,6 @@ do it.
 
 When you have finished all steps of a lesson, a dialog shows up congratulating
 you for the achievement. In that same dialog, you can either start one of the
-suggested lesson or close the dialog and the :guilabel:`Lessons panel`.
+suggested lessons or close the dialog and the :guilabel:`Lessons panel`.
 
 .. figure:: img/congratulations_message.png
