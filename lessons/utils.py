@@ -10,8 +10,12 @@ from qgis.PyQt.QtCore import QDir, QSettings, Qt
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import QMenu, QApplication
 
-from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QgsRasterLayer
+from qgis.core import (QgsMapLayerRegistry,
+                       QgsMapLayer,
+                       QgsVectorLayer,
+                       QgsRasterLayer)
 from qgis.utils import iface
+
 
 def layerFromName(name):
     '''
@@ -160,3 +164,25 @@ def setActiveLayer(layerName):
     """
     layer = layerFromName(layerName)
     iface.setActiveLayer(layer)
+
+
+def layerExists(layerName, typeName):
+    """Returns True if layer with the given name exists and
+    has specified type ("vector", "raster" or "plugin")
+    """
+    layers = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
+    if len(layers) == 0:
+        return False
+
+    if typeName.lower() == 'raster':
+        layerType = QgsMapLayer.RasterLayer
+    elif typeName.lower() == 'vector':
+        layerType = QgsMapLayer.VectorLayer
+    else:
+        layerType = QgsMapLayer.PluginLayer
+
+    for lay in layers:
+        if lay.name() == layerName and lay.type() == layerType:
+            return True
+
+    return False
