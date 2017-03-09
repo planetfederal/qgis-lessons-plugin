@@ -182,7 +182,22 @@ def layerExists(layerName, typeName):
         layerType = QgsMapLayer.PluginLayer
 
     for lay in layers:
-        if lay.name() == layerName and lay.type() == layerType:
+        if lay.name().lower() == layerName.lower() and lay.type() == layerType:
+            return True
+
+    return False
+
+
+def checkLayerCrs(layerName, crs):
+    """Returns True if CRS of the given layer matches to the given
+    CRS, defined by authid.
+    """
+    layers = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
+    if len(layers) == 0:
+        return False
+
+    for lay in layers:
+        if lay.name().lower() == layerName.lower() and lay.crs().authid().lower() == crs.lower():
             return True
 
     return False
