@@ -79,7 +79,7 @@ class Lesson(object):
         step = Step(name, description, _function, prestep, endsignals, endsignalchecks, endcheck, steptype)
         self.steps.append(step)
 
-    def addMenuClickStep(self, menuName, description=None):
+    def addMenuClickStep(self, menuName, description=None, name=None):
         try:
             menu, action = menuFromName(menuName)
         except:
@@ -90,8 +90,8 @@ class Lesson(object):
                 QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s" % menuName,
                                          level=QgsMessageLog.WARNING)
                 return None
-
-        name = "Click on '%s' menu item." % action.text().replace("&","")
+        if name is None:
+            name = "Click on '%s' menu item." % action.text().replace("&","")
         if description is None:
             description = "<p>Click on <b>%s</b> menu item.</p>" \
                           "<p>Once you click, the lesson will automatically move to the next step.</p>"\
