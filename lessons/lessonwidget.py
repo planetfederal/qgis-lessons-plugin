@@ -34,6 +34,7 @@ class LessonWidget(BASE, WIDGET):
         self.init(lesson)
 
     def init(self, lesson):
+        self.resetGui()
         self.listSteps.clear()
         self.lesson = lesson
         bulletIcon = QIcon(os.path.dirname(__file__) + '/bullet.png')
@@ -80,6 +81,7 @@ class LessonWidget(BASE, WIDGET):
         return partial(_endSignalEmitted, i)
 
     def restartLesson(self):
+        self.resetGui()
         for i in range(self.listSteps.count()):
             item = self.listSteps.item(i)
             item.setBackground(Qt.white)
@@ -135,3 +137,7 @@ class LessonWidget(BASE, WIDGET):
         self.setVisible(False)
 
         self.lessonFinished.emit()
+
+    def resetGui(self):
+        self.btnMove.setText(self.tr("Next step"))
+        self.btnMove.setToolTip(self.tr("Move to next step"))
