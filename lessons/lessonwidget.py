@@ -44,6 +44,8 @@ class LessonWidget(BASE, WIDGET):
             item.setIcon(bulletIcon)
         self.currentStep = 0
         self.lessonNameLabel.setText("<b>Current lesson:</b> %s" % lesson.name)
+        self.btnMove.setText(self.tr("Next step"))
+        self.btnMove.setToolTip(self.tr("Move to next step"))
         self.moveToNextStep()
 
     def runCurrentStepFunction(self):
@@ -95,6 +97,7 @@ class LessonWidget(BASE, WIDGET):
         else:
             if self.currentStep == len(self.lesson.steps) - 1:
                 self.btnMove.setText(self.tr("Finish"))
+                self.btnMove.setToolTip(self.tr("Finish the lesson"))
 
             step = self.lesson.steps[self.currentStep]
             if step.endsignals is not None:
