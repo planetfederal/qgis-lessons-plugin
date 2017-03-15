@@ -32,6 +32,7 @@ separate folder with the structure shown below:
     |-- __init__.py (empty)
     |-- group.html (or group.md)
     |-- lesson.manifest
+    |-- style.css
 
 
 All these elements are explained in the next sections of this document.
@@ -68,6 +69,11 @@ packaging and deployment in `Boundless Connect <https://connect.boundlessgeo
 Please note the ``[lessons]`` placeholder. It will be replaced by the
 group's list of lessons, taken from their folders names (replacing
 underscores with spaces).
+
+The :file:`style.css` is another optional file, that allows to set up a common
+CSS/HTML style for all lessons's steps within the group. The declarations on
+this file will be appended to each html or markdown files used for step
+description during the lessons' run time.
 
 Creating a lesson in Python
 ---------------------------

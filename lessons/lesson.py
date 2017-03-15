@@ -46,7 +46,7 @@ class Lesson(object):
         self.nextLessons = []
         self.description = self.resolveFile(description)
         self.style = ""
-        path = os.path.join(self.folder, "style.css")
+        path = os.path.join(os.path.dirname(self.folder), "style.css")
         if os.path.exists(path):
             with open(path) as f:
                 self.style = "<style>\n" + "".join(f.readlines()) + "\n</style>\n"
