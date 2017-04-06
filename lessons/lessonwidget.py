@@ -54,7 +54,7 @@ class LessonWidget(BASE, WIDGET):
         QCoreApplication.processEvents()
         step = self.lesson.steps[self.currentStep]
         self.webView.setEnabled(False)
-        step.function()
+        step.runFunction("function")
         self.webView.setEnabled(True)
         self.stepFinished()
 
@@ -137,7 +137,7 @@ class LessonWidget(BASE, WIDGET):
 
             QCoreApplication.processEvents()
             if step.prestep is not None:
-                execute(step.prestep)
+                step.runFunction("prestep")
             if step.function is not None:
                 self.btnRunStep.setEnabled(step.steptype != Step.AUTOMATEDSTEP)
                 self.btnMove.setEnabled(step.steptype != Step.AUTOMATEDSTEP and step.endsignals is None)

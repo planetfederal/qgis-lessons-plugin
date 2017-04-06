@@ -11,7 +11,7 @@ from lessons import addLessonModule
 lesson = Lesson("Export to geojson", "Basic lessons", "lesson.html")
 lesson.addStep("Set 'points' layer as active layer", "activelayer.md",
                function=lambda: setActiveLayer("points"),
-               endcheck=lambda:layerActive("points"),
+               endcheck=lambda: layerActive("points"),
                steptype=Step.MANUALSTEP)
 lesson.addMenuClickStep("Layer/Save As...")
 lesson.addStep("Save the file as geojson", "saveas.html", steptype=Step.MANUALSTEP)

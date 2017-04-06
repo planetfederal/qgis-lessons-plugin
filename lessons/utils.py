@@ -197,11 +197,11 @@ def layerActive(layerName):
     return layer is not None and layer.name() == layerName
 
 
-def setActiveLayer(layerName):
+def setActiveLayer(*args):
     """Makes layer with the given name active.
     NOTE: layer should be loaded into project.
     """
-    layer = layerFromName(layerName)
+    layer = layerFromName(args[0])
     iface.setActiveLayer(layer)
 
 

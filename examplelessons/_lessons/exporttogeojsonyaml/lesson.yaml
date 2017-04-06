@@ -6,6 +6,10 @@ lesson:
     steps: #a list of steps in the lesson, in the correct order in which they have to be performed
         - name: Set 'points' layer as active layer
           description: activelayer.html #the filename of the description page for this step
+          function:
+            name: utils.setActiveLayer
+            params:
+              - points
 
         - menu: Layer/Save As... # this will add a step that prompts the user to click on the specified menu
 

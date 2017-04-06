@@ -8,23 +8,26 @@ import yaml
 import difflib
 import shutil
 import codecs
+import imp
+from importlib import import_module
 
 from qgis.core import QgsMessageLog
 
 from lessons.utils import openProject, menuFromName, execute, getMenuPaths, qgisLocale
 
+
 def _ensureList(obj):
-    if obj is None or  isinstance(obj, list):
+    if obj is None or isinstance(obj, list):
         return obj
     else:
         return [obj]
+
 
 class Step(object):
 
     MANUALSTEP, AUTOMATEDSTEP = list(range(2))
 
-
-    def __init__(self, name, description, function=None, prestep=None, endsignals=None,
+    def __init__(self, name, description, function=None, prestep=None, params=None, endsignals=None,
                  endsignalchecks=None, endcheck=lambda:True, steptype=1):
         self.name = name
         self.description = description or ""
@@ -34,6 +37,17 @@ class Step(object):
         self.endsignals = _ensureList(endsignals)
         self.endsignalchecks = _ensureList(endsignalchecks)
         self.steptype = steptype
+        self.params = params
+
+    def runFunction(self, func):
+        params = self.getParams(func)
+        self.function(*params)
+
+    def getParams(self, func):
+        if func in self.params:
+            return self.params[func]
+        else:
+            return tuple()
 
 class Lesson(object):
 
@@ -78,11 +92,49 @@ class Lesson(object):
     def addStep(self, name, description, function=None, prestep=None, endsignals=None,
                 endsignalchecks=None, endcheck=lambda:True, steptype=1):
         description = self.resolveFile(description)
+
+        params = dict()
         if function is not None:
-            _function = lambda: execute(function)
+            if isinstance(function, dict):
+                if "params" in function:
+                    p = tuple(function["params"])
+                else:
+                    p = None
+                params["function"] = p
+
+                if function["name"].startswith("utils."):
+                    functionName = function["name"].split(".")[1]
+                    function = getattr(import_module('lessons.utils'), functionName)
+                else:
+                    mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
+                    function = getattr(mod, function["name"])
+
+                _function = function
+            else:
+                _function = function
         else:
             _function = None
-        step = Step(name, description, _function, prestep, endsignals, endsignalchecks, endcheck, steptype)
+
+        if prestep is not None:
+            if "params" in prestep:
+                p = tuple([prestep]["params"])
+            else:
+                p = None
+            params["prestep"] = p
+
+            if prestep["name"].startswith("utils."):
+                functionName = prestep["name"].split(".")[1]
+                function = getattr(import_module('lessons.utils'), functionName)
+            else:
+                mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
+                function = getattr(mod, function["name"])
+
+            _prestep = function
+        else:
+            _prestep = None
+
+
+        step = Step(name, description, _function, _prestep, params, endsignals, endsignalchecks, endcheck, steptype)
         self.steps.append(step)
 
     def addMenuClickStep(self, menuName, description=None, name=None):
@@ -110,6 +162,7 @@ class Lesson(object):
 
     def uninstall(self):
         shutil.rmtree(self.folder, True)
+
 
 def lessonFromYamlFile(f):
     locale = qgisLocale()
@@ -139,7 +192,17 @@ def lessonFromYamlFile(f):
             lesson.addMenuClickStep(step["menu"], description, name)
 
         else:
-            lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
+            if "function" in step:
+                function = step["function"]
+            else:
+                function = None
+
+            if "prestep" in step:
+                prestep = step["prestep"]
+            else:
+                prestep = None
+
+            lesson.addStep(step["name"], step["description"], function, prestep, steptype=Step.MANUALSTEP)
 
     if "nextLessons" in lessonDict:
         for nextLesson in lessonDict["nextLessons"]:
