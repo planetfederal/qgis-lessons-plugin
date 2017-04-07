@@ -27,6 +27,7 @@ class LessonWidget(BASE, WIDGET):
     def __init__(self, lesson):
         super(LessonWidget, self).__init__()
         self.setupUi(self)
+        self.listHeight = self.listSteps.height
         self.btnFinish.clicked.connect(self.finishLesson)
         self.btnMove.clicked.connect(self.stepFinished)
         self.btnRestart.clicked.connect(self.restartLesson)
@@ -121,6 +122,13 @@ class LessonWidget(BASE, WIDGET):
                 self.webView.setHtml(html)
             else:
                 self.webView.setHtml(step.description)
+
+            height = self.webView.document().size().height()
+            if height > self.webView.height():
+                self.listSteps.setFixedHeight(self.listHeight)
+            else:
+                self.listSteps.setFixedHeight(self.listSteps.minimumHeight())
+
             QCoreApplication.processEvents()
             if step.prestep is not None:
                 execute(step.prestep)
