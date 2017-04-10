@@ -27,7 +27,7 @@ class LessonWidget(BASE, WIDGET):
     def __init__(self, lesson):
         super(LessonWidget, self).__init__()
         self.setupUi(self)
-        self.listHeight = self.listSteps.height
+        self.listHeight = self.listSteps.height()
         self.btnFinish.clicked.connect(self.finishLesson)
         self.btnMove.clicked.connect(self.stepFinished)
         self.btnRestart.clicked.connect(self.restartLesson)
