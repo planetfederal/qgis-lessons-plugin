@@ -41,7 +41,11 @@ class Step(object):
 
     def runFunction(self, func):
         params = self.getParams(func)
-        self.function(*params)
+
+        if func == "function":
+            return self.function(*params)
+        elif func == "endcheck":
+            return self.endcheck(*params)
 
     def getParams(self, func):
         if func in self.params:
@@ -117,7 +121,7 @@ class Lesson(object):
 
         if prestep is not None:
             if "params" in prestep:
-                p = tuple([prestep]["params"])
+                p = tuple(prestep["params"])
             else:
                 p = None
             params["prestep"] = p
@@ -133,8 +137,28 @@ class Lesson(object):
         else:
             _prestep = None
 
+        if endcheck is not None:
+            if isinstance(endcheck, dict):
+                if "params" in endcheck:
+                    p = tuple(endcheck["params"])
+                else:
+                    p = None
+                params["endcheck"] = p
 
-        step = Step(name, description, _function, _prestep, params, endsignals, endsignalchecks, endcheck, steptype)
+                if endcheck["name"].startswith("utils."):
+                    functionName = endcheck["name"].split(".")[1]
+                    function = getattr(import_module('lessons.utils'), functionName)
+                else:
+                    mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
+                    function = getattr(mod, function["name"])
+
+                _endcheck = function
+            else:
+                _endcheck = None
+        else:
+            _endcheck = None
+
+        step = Step(name, description, _function, _prestep, params, endsignals, endsignalchecks, _endcheck, steptype)
         self.steps.append(step)
 
     def addMenuClickStep(self, menuName, description=None, name=None):
@@ -202,7 +226,12 @@ def lessonFromYamlFile(f):
             else:
                 prestep = None
 
-            lesson.addStep(step["name"], step["description"], function, prestep, steptype=Step.MANUALSTEP)
+            if "endcheck" in step:
+                _endcheck = step["endcheck"]
+            else:
+                _endcheck = None
+
+            lesson.addStep(step["name"], step["description"], function, prestep, endcheck=_endcheck, steptype=Step.MANUALSTEP)
 
     if "nextLessons" in lessonDict:
         for nextLesson in lessonDict["nextLessons"]:

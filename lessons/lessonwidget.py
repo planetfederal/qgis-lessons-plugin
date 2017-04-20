@@ -61,7 +61,7 @@ class LessonWidget(BASE, WIDGET):
     def stepFinished(self):
         step = self.lesson.steps[self.currentStep]
         if step.endcheck is not None:
-            ret = step.endcheck()
+            ret = step.runFunction("endcheck")
             if ret != True: #We support both bool and str return values, for backwards compatibility
                 if ret == False:
                     msg = ("It seems that the previous step was not correctly completed."

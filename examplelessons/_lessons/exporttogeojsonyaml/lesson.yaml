@@ -11,6 +11,11 @@ lesson:
             params:
               - points
 
+          endcheck:
+            name: utils.layerActive
+            params:
+              - points
+
         - menu: Layer/Save As... # this will add a step that prompts the user to click on the specified menu
 
         - name: Save the file as geojson

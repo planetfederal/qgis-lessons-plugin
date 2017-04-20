@@ -190,11 +190,11 @@ def qgisLocale():
         return QLocale.system().name()[:2]
 
 
-def layerActive(layerName):
+def layerActive(*args):
     """Returns True if layer with the given name is active.
     """
     layer = iface.activeLayer()
-    return layer is not None and layer.name() == layerName
+    return layer is not None and layer.name() == args[0]
 
 
 def setActiveLayer(*args):
