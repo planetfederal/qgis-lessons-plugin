@@ -197,7 +197,10 @@ def lessonFromYamlFile(f):
     if locale in lessonDict["lesson"]:
         lessonDict = lessonDict["lesson"][locale]
     else:
-        lessonDict = lessonDict["lesson"]["en"]
+        if "en" in lessonDict["lesson"]:
+            lessonDict = lessonDict["lesson"]["en"]
+        else:
+            lessonDict = lessonDict["lesson"]
 
     lesson = Lesson(lessonDict["name"], lessonDict["group"], lessonDict["description"],
                     os.path.dirname(f), lessonDict.get("version", [None, None]))
