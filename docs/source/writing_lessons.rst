@@ -106,10 +106,21 @@ file containing a richer description. For instance:
    lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
                     "lesson.html")
 
-
 There is no need to add the full path to the description file. As long as the
 file is in the same folder as the :file:`__init__.py` file, the full path
 will be correctly resolved at runtime.
+
+The ``Lesson`` object accepts a tuple with the min/max QGIs version numbers required 
+for the lessons, like this:
+
+.. code-block:: python
+
+   lesson = Lesson ("Interpolating from a points layer", "Analysis lessons",
+                    "lesson.html", version=(2.11, 2.14))
+
+If the current version doesnt match these versions, the lessons will be disabled in the
+lessons selector. If no version information is provided, the lessons will already be
+shown as enabled.
 
 You can also use Markdown files (with the ``md`` extension) instead of HTML
 files. They will be converted to HTML code automatically by the lessons plugin
