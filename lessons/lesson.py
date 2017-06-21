@@ -35,7 +35,7 @@ class Step(object):
 
 class Lesson(object):
 
-    def __init__(self, name, group, description, folder = None):
+    def __init__(self, name, group, description, folder = None, version = [None,None]):
         if folder is None:
             folder = os.path.dirname(traceback.extract_stack()[-2][0])
         self.folder = folder
@@ -43,6 +43,7 @@ class Lesson(object):
         self.name = name
         self.group = group
         self.cleanup = lambda: None
+        self.version = version
         self.nextLessons = []
         self.description = self.resolveFile(description)
         self.style = ""
@@ -108,7 +109,7 @@ def lessonFromYamlFile(f):
     with open(f) as stream:
         lessonDict = yaml.load(stream)
     lesson = Lesson(lessonDict["name"], lessonDict["group"], lessonDict["description"],
-                    os.path.dirname(f))
+                    os.path.dirname(f), lessonDict.get("version", [None, None]))
     for step in lessonDict["steps"]:
         if "menu" in step:
             if "description" in step:

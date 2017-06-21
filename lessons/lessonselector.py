@@ -7,7 +7,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl, Qt
 from qgis.PyQt.QtGui import QIcon, QTextDocument, QCursor, QApplication
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox, QFileDialog, QMessageBox
-
+from qgis.utils import QGis
 from lessons import lessons, _removeLesson, groups, installLessonsFromZipFile
 import codecs
 import markdown
@@ -61,6 +61,12 @@ class LessonSelector(BASE, WIDGET):
                 lessonItem.setText(0, lesson.name)
                 lessonItem.setIcon(0, lessonIcon)
                 groupItem.addChild(lessonItem)
+                if lesson.version[0] is not None and str(lesson.version[0]) > QGis.QGIS_VERSION:
+                    lessonItem.setText(0, lesson.name + " (requires QGIS >= %s)" % lesson.version[0])
+                    lessonItem.setDisabled(True)
+                if lesson.version[1] is not None and str(lesson.version[1]) < QGis.QGIS_VERSION:
+                    lessonItem.setText(0, lesson.name + " (requires QGIS <= %s)" % lesson.version[1])
+                    lessonItem.setDisabled(True)
             self.lessonsTree.addTopLevelItem(groupItem)
 
         self.lessonsTree.sortItems(0, 0)
