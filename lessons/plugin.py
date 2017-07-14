@@ -11,6 +11,11 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsApplication
 
+from qgiscommons.gui import (addAboutMenu,
+                             removeAboutMenu,
+                             addHelpMenu,
+                             removeHelpMenu)
+
 import lessons
 from lessons.lessonwidget import LessonWidget
 from lessons.lessonselector import LessonSelector
@@ -32,10 +37,11 @@ class LessonsPlugin(object):
         self.lessonWidget = None
 
     def unload(self):
-        self.iface.removePluginMenu(u"Lessons", self.action)
+        self.iface.removePluginMenu("Lessons", self.action)
         del self.action
-        self.iface.removePluginMenu(u"Lessons", self.helpAction)
-        del self.helpAction
+
+        removeHelpMenu("Lessons")
+        removeAboutMenu("Lessons")
 
         tempDir = os.path.join(QDir.tempPath(), 'lessons' , 'lesson')
         if QDir(tempDir).exists():
@@ -52,12 +58,11 @@ class LessonsPlugin(object):
         lessonIcon = QIcon(os.path.dirname(__file__) + '/lesson.gif')
         self.action = QAction(lessonIcon, "Open Lessons Library...", self.iface.mainWindow())
         self.action.triggered.connect(self.start)
-        self.iface.addPluginToMenu(u"Lessons", self.action)
-        helpIcon = QgsApplication.getThemeIcon('/mActionHelpAPI.png')
-        self.helpAction = QAction(helpIcon, "Lessons Help", self.iface.mainWindow())
-        self.helpAction.setObjectName("lessonsPluginHelp")
-        self.helpAction.triggered.connect(lambda: webbrowser.open_new("file://" + os.path.join(os.path.dirname(__file__), "docs", "html", "index.html")))
-        self.iface.addPluginToMenu("Lessons", self.helpAction)
+        self.iface.addPluginToMenu("Lessons", self.action)
+
+        addHelpMenu("Lessons")
+        addAboutMenu("Lessons")
+
         self.lessonwidget = None
 
         lessons.loadLessons()
