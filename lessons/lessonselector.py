@@ -88,6 +88,8 @@ class LessonSelector(BASE, WIDGET):
                 if os.path.exists(item.lesson.description):
                     with open(item.lesson.description) as f:
                         html = "".join(f.readlines())
+                        if item.lesson.description.endswith(".md"):
+                            html = markdown.markdown(html)
                     self.webView.document().setMetaInformation(QTextDocument.DocumentUrl,
                                                                QUrl.fromUserInput(item.lesson.description).toString())
                     self.webView.setHtml(html)
