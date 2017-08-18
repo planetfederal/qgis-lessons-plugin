@@ -7,6 +7,7 @@ import imp
 import glob
 import zipfile
 from lessons.lesson import lessonFromYamlFile
+from lessons.utils import lessonsBaseFolder
 from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
 
@@ -85,12 +86,10 @@ def lessonFromName(group, name):
         if lesson.group == group and lesson.name == name:
             return lesson
 
+# maintained this fuction to does not change plugin api from external calls
+# it can be substituted directly with lessonsBaseFolder()
 def lessonsFolder():
-    folder = os.path.join(os.path.dirname(__file__), '_lessons')
-    if not QDir(folder).exists():
-        QDir().mkpath(folder)
-
-    return folder
+    return lessonsBaseFolder()
 
 
 def installLessonsFromZipFile(path):

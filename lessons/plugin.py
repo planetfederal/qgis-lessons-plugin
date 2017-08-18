@@ -15,6 +15,7 @@ from qgiscommons.gui import (addAboutMenu,
                              removeAboutMenu,
                              addHelpMenu,
                              removeHelpMenu)
+from qgiscommons.settings import readSettings
 
 import lessons
 from lessons.lessonwidget import LessonWidget
@@ -25,6 +26,8 @@ class LessonsPlugin(object):
 
     def __init__(self, iface):
         self.iface = iface
+        # read plugin settings
+        readSettings()
 
         # add tests to test plugin
         try:

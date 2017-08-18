@@ -15,6 +15,7 @@ from qgis.core import (QgsMapLayerRegistry,
                        QgsVectorLayer,
                        QgsRasterLayer)
 from qgis.utils import iface
+from qgiscommons.settings import pluginSetting
 
 
 def layerFromName(name):
@@ -65,7 +66,7 @@ def loadLayerNoCrsDialog(filename, name=None):
 def getMenuPath(menu):
     path = []
     while isinstance(menu, QMenu):
-        path.append(menu.title().replace("&",""))
+        path.append(menu.title().replace("&", ""))
         menu = menu.parent()
     return "/".join(path[::-1])
 
@@ -97,23 +98,51 @@ def getAllMenus():
 
 def menuFromName(menuName):
     menuActions = getAllMenus()
-    shortMenuName = re.match(r"(.*\/)?(.*\/.*)$",menuName).group(2)
+    shortMenuName = re.match(r"(.*\/)?(.*\/.*)$", menuName).group(2)
     for action, menu in menuActions:
-        name = getMenuPath(menu) + "/" + action.text().replace("&","")
-        if re.match(r"(.*\/)?(.*\/.*)$",name).group(2) == shortMenuName:
+        name = getMenuPath(menu) + "/" + action.text().replace("&", "")
+        if re.match(r"(.*\/)?(.*\/.*)$", name).group(2) == shortMenuName:
             return menu, action
 
 
 def getMenuPaths():
     menuActions = getAllMenus()
-    return [getMenuPath(menu) + "/" + action.text().replace("&","") for action,menu in menuActions]
+    return [getMenuPath(menu) + "/" + action.text().replace("&", "") for action, menu in menuActions]
 
 
 def lessonDataFolder(lessonFolderName):
-    folder = os.path.join(os.path.expanduser("~"), "qgislessonsdata", lessonFolderName)
+    '''Return the folder where to store lessons data. It is created inside the
+    lessonPluginBaseFolder().
+    '''
+    folder = os.path.join(self.lessonPluginBaseFolder(), "data", lessonFolderName)
     if not QDir(folder).exists():
         QDir().mkpath(folder)
 
+    return QDir.toNativeSeparators(folder)
+
+
+def lessonsBaseFolder():
+    '''Return the folder where to store lessons. It is created inside the lessonPluginBaseFolder().
+    '''
+    folder = os.path.join(self.lessonPluginBaseFolder(), "lessons")
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
+
+    return QDir.toNativeSeparators(folder)
+
+
+def lessonPluginBaseFolder():
+    '''Return the base folder where to store lessons and data. If in setting only a name
+    is specified but not a valid folder => Assumed the folder will be created in $HOME path.
+    '''
+    folder = pluginSetting('BaseFolder')
+    # check if the value is only a basname => create it in $HOME
+    if not QDir(folder).exists():
+        if folder == os.path.basename(folder):
+            folder = os.path.join(os.path.expanduser("~"), folder)
+    # create it
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
     return QDir.toNativeSeparators(folder)
 
 
@@ -136,7 +165,7 @@ def unfoldMenu(menu, action):
 def openProject(projectFile):
     folder = os.path.dirname(projectFile)
     projectName = os.path.basename(projectFile)
-    tempDir = os.path.join(QDir.tempPath(), 'lessons' , 'lesson' + str(time.time()))
+    tempDir = os.path.join(QDir.tempPath(), 'lessons', 'lesson' + str(time.time()))
     dest = os.path.abspath(tempDir)
     shutil.copytree(folder, dest)
     tempProjectFile = os.path.join(dest, projectName)
