@@ -21,7 +21,8 @@ options(
         source_dir = path('lessons'),
         package_dir = path('.'),
         tests = ['test'],
-        ext_libs = path('lessons/ext-libs'),
+        ext_libs = path('lessons/extlibs'),
+        old_ext_libs = path('lessons/ext-libs'),
         ext_src = path('lessons/ext-src'),
         lessons = ['_lessons'],
         excludes = [
@@ -111,9 +112,11 @@ def setup():
     """Install run-time dependencies"""
     clean = getattr(options, 'clean', False)
     ext_libs = options.plugin.ext_libs
+    old_ext_libs = options.plugin.old_ext_libs
     ext_src = options.plugin.ext_src
     if clean:
         ext_libs.rmtree()
+        old_ext_libs.rmtree()
     ext_libs.makedirs()
 
     runtime, test = read_requirements()
@@ -189,7 +192,7 @@ def pep8(args):
     ignore = ['E203', 'E121', 'E122', 'E123', 'E124', 'E125', 'E126', 'E127',
         'E128', 'E402']
     styleguide = pep8.StyleGuide(ignore=ignore,
-                                 exclude=['*/ext-libs/*', '*/ext-src/*'],
+                                 exclude=['*/extlibs/*', '*/ext-src/*'],
                                  repeat=True, max_line_length=79,
                                  parse_argv=args)
     styleguide.input_dir(options.plugin.source_dir)
@@ -216,7 +219,7 @@ def autopep8(args):
 
     cmd_args = autopep8.parse_args(args)
 
-    excludes = ('ext-lib', 'ext-src')
+    excludes = ('extlib', 'ext-src')
     for p in options.plugin.source_dir.walk():
         if any(exclude in p for exclude in excludes):
             continue
