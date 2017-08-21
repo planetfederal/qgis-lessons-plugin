@@ -2,7 +2,7 @@
 name=Lessons Plugin
 description=Plugin for self-paced lessons and tutorials
 about= Run self-paced tutorials for interactive learning within QGIS. Or create and share your own workflows to standardize procedures in your organization.
-version=0.1
+version=0.2
 qgisMinimumVersion=2.0
 author=Victor Olaya (Boundless)
 email=volaya@boundlessgeo.com
@@ -14,4 +14,4 @@ icon=lesson.gif
 class_name=LessonsPlugin
 tags=plugins,boundless
 experimental=False
-changelog=
+changelog=0.2 - Install lessons in configurable folder
