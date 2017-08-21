@@ -103,27 +103,40 @@ def installLessonsFromZipFile(path):
         loadLessons()
 
 
+def loadLessonsFromPaths(paths):
+    for path in paths:
+        for folder in os.listdir(path):
+            if os.path.isdir(os.path.join(path, folder)):
+                groupFiles = [os.path.join(path, folder, f) for f in ["group.html", "group.md"]]
+                for groupFile in groupFiles:
+                    if os.path.exists(groupFile):
+                        groups[folder.replace("_", " ")] = groupFile
+                        break
+                for subfolder in os.listdir(os.path.join(path, folder)):
+                    if os.path.isdir(os.path.join(path, folder, subfolder)):
+                        try:
+                            f = os.path.join(path, folder, subfolder, "__init__.py")
+                            if os.path.exists(f):
+                                m = imp.load_source("%s.%s" % (folder, subfolder), f)
+                                addLessonModule(m)
+                        except:
+                            pass
+                        if isYamlLessonFolder(os.path.join(path, folder), subfolder):
+                            lesson = lessonFromYamlFile(os.path.join(path, folder, subfolder, "lesson.yaml"))
+                            if lesson:
+                                _addLesson(lesson)
+
+
 def loadLessons():
-    for folder in os.listdir(lessonsFolder()):
-        if os.path.isdir(os.path.join(lessonsFolder(), folder)):
-            groupFiles = [os.path.join(lessonsFolder(), folder, f) for f in ["group.html", "group.md"]]
-            for groupFile in groupFiles:
-                if os.path.exists(groupFile):
-                    groups[folder.replace("_", " ")] = groupFile
-                    break
-            for subfolder in os.listdir(os.path.join(lessonsFolder(), folder)):
-                if os.path.isdir(os.path.join(lessonsFolder(), folder, subfolder)):
-                    try:
-                        f = os.path.join(lessonsFolder(), folder, subfolder, "__init__.py")
-                        if os.path.exists(f):
-                            m = imp.load_source("%s.%s" % (folder, subfolder), f)
-                            addLessonModule(m)
-                    except:
-                        pass
-                    if isYamlLessonFolder(os.path.join(lessonsFolder(), folder), subfolder):
-                        lesson = lessonFromYamlFile(os.path.join(lessonsFolder(), folder, subfolder, "lesson.yaml"))
-                        if lesson:
-                            _addLesson(lesson)
+    """Load all lessons beloging to the plugin of installed in the configured
+    lesson location path."""
+    paths = []
+    # set local lessons path
+    paths.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '_lessons')))
+    # set configured lesson location
+    paths.append(lessonsFolder())
+    # then load all lessons
+    loadLessonsFromPaths(paths)
 
 
 def classFactory(iface):
