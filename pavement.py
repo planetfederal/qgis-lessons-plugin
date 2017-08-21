@@ -114,9 +114,10 @@ def setup():
     ext_libs = options.plugin.ext_libs
     old_ext_libs = options.plugin.old_ext_libs
     ext_src = options.plugin.ext_src
+    if os.path.exists(old_ext_libs):
+        shutil.rmtree(old_ext_libs)
     if clean:
         ext_libs.rmtree()
-        old_ext_libs.rmtree()
     ext_libs.makedirs()
 
     runtime, test = read_requirements()
