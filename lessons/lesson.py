@@ -117,7 +117,12 @@ def lessonFromYamlFile(f):
             else:
                 description = None
 
-            lesson.addMenuClickStep(step["menu"], description)
+            if "name" in step:
+                name = step["name"]
+            else:
+                name = None
+
+            lesson.addMenuClickStep(step["menu"], description, name)
 
         else:
             lesson.addStep(step["name"], step["description"], steptype=Step.MANUALSTEP)
