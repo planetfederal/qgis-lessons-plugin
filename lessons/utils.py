@@ -15,7 +15,8 @@ from qgis.core import (QgsMapLayerRegistry,
                        QgsVectorLayer,
                        QgsRasterLayer)
 from qgis.utils import iface
-from qgiscommons.settings import pluginSetting
+
+from qgiscommons2.settings import pluginSetting
 
 
 def layerFromName(name):
@@ -114,7 +115,7 @@ def lessonDataFolder(lessonFolderName):
     '''Return the folder where to store lessons data. It is created inside the
     lessonPluginBaseFolder().
     '''
-    folder = os.path.join(self.lessonPluginBaseFolder(), "data", lessonFolderName)
+    folder = os.path.join(lessonPluginBaseFolder(), "data", lessonFolderName)
     if not QDir(folder).exists():
         QDir().mkpath(folder)
 
@@ -124,7 +125,7 @@ def lessonDataFolder(lessonFolderName):
 def lessonsBaseFolder():
     '''Return the folder where to store lessons. It is created inside the lessonPluginBaseFolder().
     '''
-    folder = os.path.join(self.lessonPluginBaseFolder(), "lessons")
+    folder = os.path.join(lessonPluginBaseFolder(), "lessons")
     if not QDir(folder).exists():
         QDir().mkpath(folder)
 

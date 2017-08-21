@@ -1,9 +1,11 @@
 [
-    {"name":"BaseFolder",
-        "label": "Base folder for lessons repository and data. By default assumed created in home path",
-        "description": "Base folder for lessons repository and data. By default assumed created in home path",
-        "type": "folder",
-        "default": "qgislessons",
-        "group": "General"
-    },
+{
+    "name":"BaseFolder",
+    "label": "Base folder for lessons and data",
+    "description": "Base folder for lessons repository and data. By default assumed created in home path",
+    "type": "folder",
+    "default": "qgislessons",
+    "group": "General"
+}
 ]
+

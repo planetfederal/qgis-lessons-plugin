@@ -11,11 +11,13 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsApplication
 
-from qgiscommons.gui import (addAboutMenu,
+from qgiscommons2.gui import (addAboutMenu,
                              removeAboutMenu,
                              addHelpMenu,
                              removeHelpMenu)
-from qgiscommons.settings import readSettings
+from qgiscommons2.gui.settings import (addSettingsMenu, 
+                                      removeSettingsMenu)
+from qgiscommons2.settings import readSettings
 
 import lessons
 from lessons.lessonwidget import LessonWidget
@@ -43,6 +45,7 @@ class LessonsPlugin(object):
         self.iface.removePluginMenu("Lessons", self.action)
         del self.action
 
+        removeSettingsMenu("Lessons")
         removeHelpMenu("Lessons")
         removeAboutMenu("Lessons")
 
@@ -63,6 +66,7 @@ class LessonsPlugin(object):
         self.action.triggered.connect(self.start)
         self.iface.addPluginToMenu("Lessons", self.action)
 
+        addSettingsMenu("Lessons")
         addHelpMenu("Lessons")
         addAboutMenu("Lessons")
 
