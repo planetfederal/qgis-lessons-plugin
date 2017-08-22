@@ -132,7 +132,9 @@ def loadLessons():
     lesson location path."""
     paths = []
     # set local lessons path
-    paths.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '_lessons')))
+    folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '_lessons'))
+    if QDir(folder).exists():
+        paths.append(folder)
     # set configured lesson location
     paths.append(lessonsFolder())
     # then load all lessons
