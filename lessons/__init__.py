@@ -128,7 +128,7 @@ def loadLessonsFromPaths(paths):
 
 
 def loadLessons():
-    """Load all lessons beloging to the plugin of installed in the configured
+    """Load all lessons belonging to the plugin or installed in the configured
     lesson location path."""
     paths = []
     # set local lessons path
