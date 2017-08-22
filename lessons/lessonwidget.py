@@ -60,11 +60,17 @@ class LessonWidget(BASE, WIDGET):
 
     def stepFinished(self):
         step = self.lesson.steps[self.currentStep]
-        if step.endcheck is not None and not step.endcheck():
-            QMessageBox.warning(self, "Lesson", "It seems that the previous step was not correctly completed."
-                                                "\nPlease review and complete the instructions before moving"
-                                                "\nto the next step.")
-            return
+        if step.endcheck is not None:
+            ret = step.endcheck():
+            if ret != True: #We support both bool and str return values, for backwards compatibility
+                if ret == False:
+                    msg = ("It seems that the previous step was not correctly completed."
+                            "\nPlease review and complete the instructions before moving"
+                            "\nto the next step.")
+                else:
+                    msg = ret
+                QMessageBox.warning(self, "Lesson", msg)
+                return
         item = self.listSteps.item(self.currentStep)
         item.setBackground(Qt.white)
         if step.endsignals is not None:

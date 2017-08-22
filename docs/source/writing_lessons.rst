@@ -110,7 +110,7 @@ There is no need to add the full path to the description file. As long as the
 file is in the same folder as the :file:`__init__.py` file, the full path
 will be correctly resolved at runtime.
 
-The ``Lesson`` object accepts a tuple with the min/max QGIs version numbers required 
+The ``Lesson`` object accepts a tuple with the min/max QGIS version numbers required 
 for the lessons, like this:
 
 .. code-block:: python
@@ -186,9 +186,11 @@ Here is a description of its arguments:
 - **endcheck**: a function to check that the step has been executed correctly.
   This function will be run when the lesson moves to the next step. It should
   return ``True`` if the user has correctly performed the task for this
-  step, or false otherwise. In this last case, the plugin will show a
+  step, or ``False`` otherwise. In this last case, the plugin will show a
   warning message and won't let the user move to the next step until the
-  step is correctly completed.
+  step is correctly completed. You can also return a string, in which case, it 
+  will be considered as an error message, and will be shown to the user, without
+  letting him move to the next step.
 - **steptype**: ``Step.MANUALSTEP`` if the step is to be performed
   manually by the user, or ``Step.AUTOMATEDSTEP`` if it's an automated one.
   In this last case, the step will not be shown in the lesson panel's index,
