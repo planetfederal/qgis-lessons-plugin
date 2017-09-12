@@ -85,8 +85,8 @@ class Lesson(object):
         if f is None:
             f = ""
         else:
-            for i in [qgisLocale(), "en"]:
-                if not os.path.exists(os.path.join(i, f)):
+            if not os.path.exists(f):
+                for i in [qgisLocale(), "en", ""]:
                     path = os.path.join(self.folder, i, f)
                     if os.path.exists(path):
                         f = path
