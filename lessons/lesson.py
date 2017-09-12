@@ -89,8 +89,7 @@ class Lesson(object):
                 if not os.path.exists(os.path.join(i, f)):
                     path = os.path.join(self.folder, i, f)
                     if os.path.exists(path):
-                        f = path
-                        break
+                        return path
 
         return os.path.join(self.folder, f)
 
