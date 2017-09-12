@@ -70,7 +70,7 @@ class Lesson(object):
         path = os.path.join(os.path.dirname(self.folder), "style.css")
         if os.path.exists(path):
             with codecs.open(path, encoding="utf-8") as f:
-                self.style = "<style>\n" + "".join(f.readlines()) + "\n</style>\n"
+                self.style = "<style>\n" + f.read() + "\n</style>\n"
         path = os.path.join(self.folder, "project.qgs")
         if os.path.exists(path):
             self.addStep("Open project", "Open project", lambda: openProject(path))

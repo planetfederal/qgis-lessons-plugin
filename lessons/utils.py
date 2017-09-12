@@ -16,7 +16,7 @@ from qgis.core import (QgsMapLayerRegistry,
                        QgsRasterLayer)
 from qgis.utils import iface
 
-from qgiscommons2.settings import pluginSetting
+from qgiscommons2.settings import pluginSetting, setPluginSetting
 
 
 def layerFromName(name):
@@ -141,6 +141,8 @@ def lessonPluginBaseFolder():
     if not QDir(folder).exists():
         if folder == os.path.basename(folder):
             folder = os.path.join(os.path.expanduser("~"), folder)
+            setPluginSetting('BaseFolder', folder)
+
     # create it
     if not QDir(folder).exists():
         QDir().mkpath(folder)

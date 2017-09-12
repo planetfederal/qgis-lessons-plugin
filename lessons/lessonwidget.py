@@ -119,7 +119,7 @@ class LessonWidget(BASE, WIDGET):
             self.listSteps.scrollToItem(item, QAbstractItemView.PositionAtCenter)
             if os.path.exists(step.description):
                 with codecs.open(step.description, encoding="utf-8") as f:
-                    html = "".join(f.readlines())
+                    html = f.read()
                 if step.description.endswith(".md"):
                     html = markdown.markdown(html)
                 html = self.lesson.style + html
