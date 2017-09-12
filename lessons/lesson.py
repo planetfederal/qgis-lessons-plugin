@@ -92,7 +92,7 @@ class Lesson(object):
                         f = path
                         break
 
-        return f
+        return os.path.join(self.folder, f)
 
     def addStep(self, name, description, function=None, prestep=None, endsignals=None,
                 endsignalchecks=None, endcheck=lambda:True, steptype=1):
