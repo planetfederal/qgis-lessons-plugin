@@ -91,6 +91,7 @@ class Lesson(object):
                     if os.path.exists(path):
                         f = path
                         break
+
         return f
 
     def addStep(self, name, description, function=None, prestep=None, endsignals=None,
@@ -120,20 +121,23 @@ class Lesson(object):
             _function = None
 
         if prestep is not None:
-            if "params" in prestep:
-                p = tuple(prestep["params"])
-            else:
-                p = None
-            params["prestep"] = p
+            if isinstance(prestep, dict):
+                if "params" in prestep:
+                    p = tuple(prestep["params"])
+                else:
+                    p = None
+                params["prestep"] = p
 
-            if prestep["name"].startswith("utils."):
-                functionName = prestep["name"].split(".")[1]
-                function = getattr(import_module('lessons.utils'), functionName)
-            else:
-                mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
-                function = getattr(mod, function["name"])
+                if prestep["name"].startswith("utils."):
+                    functionName = prestep["name"].split(".")[1]
+                    function = getattr(import_module('lessons.utils'), functionName)
+                else:
+                    mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
+                    function = getattr(mod, function["name"])
 
-            _prestep = function
+                _prestep = function
+            else:
+                _prestep = prestep
         else:
             _prestep = None
 
@@ -154,7 +158,7 @@ class Lesson(object):
 
                 _endcheck = function
             else:
-                _endcheck = None
+                _endcheck = endcheck
         else:
             _endcheck = None
 
