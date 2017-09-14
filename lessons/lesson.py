@@ -153,7 +153,7 @@ class Lesson(object):
                     function = getattr(import_module('lessons.utils'), functionName)
                 else:
                     mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
-                    function = getattr(mod, function["name"])
+                    function = getattr(mod, endcheck["name"])
 
                 _endcheck = function
             else:
