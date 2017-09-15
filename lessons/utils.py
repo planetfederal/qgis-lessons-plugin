@@ -5,16 +5,17 @@ import os
 import re
 import time
 import shutil
+import threading
 
-from qgis.PyQt.QtCore import QDir, QSettings, Qt, QLocale
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import QDir, QSettings, Qt, QLocale, QTimer
+from qgis.PyQt.QtGui import QCursor, QDialog
 from qgis.PyQt.QtWidgets import QMenu, QApplication
 
 from qgis.core import (QgsMapLayerRegistry,
                        QgsMapLayer,
                        QgsVectorLayer,
                        QgsRasterLayer)
-from qgis.utils import iface
+from qgis.utils import iface, plugins
 
 from qgiscommons2.settings import pluginSetting, setPluginSetting
 
@@ -242,3 +243,27 @@ def checkLayerCrs(layerName, crs):
             return True
 
     return False
+
+
+def unmodalWidget(objectName, repeatTimes=10, repeatInterval=500, step=0):
+    """Look for a widget in the QGIS hierarchy to set it as
+    not modal.
+    If the widget is not found try agail after a "repeatInterval"
+    and repeat no more that "repeatTimes"
+    """
+    if not objectName:
+        return
+
+    for d in iface.mainWindow().findChildren(QDialog):
+        if d.objectName() != objectName:
+            continue
+        d.setWindowModality(False)
+
+        return
+
+    if repeatTimes == step:
+        return
+
+    # if here => not found 
+    QTimer.singleShot(repeatInterval, lambda: unmodalWidget(objectName, repeatTimes, repeatInterval, step+1))   
+

@@ -44,6 +44,8 @@ class Step(object):
 
         if func == "function":
             return self.function(*params)
+        elif func == "prestep":
+            return self.prestep(*params)
         elif func == "endcheck":
             return self.endcheck(*params)
 
