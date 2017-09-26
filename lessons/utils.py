@@ -14,11 +14,11 @@ from qgis.PyQt.QtWidgets import QMenu, QApplication
 from qgis.core import (QgsMapLayerRegistry,
                        QgsMapLayer,
                        QgsVectorLayer,
-                       QgsRasterLayer)
+                       QgsRasterLayer,
+                       QgsApplication)
 from qgis.utils import iface, plugins
 
 from qgiscommons2.settings import pluginSetting, setPluginSetting
-
 
 def layerFromName(name):
     '''
@@ -251,19 +251,24 @@ def unmodalWidget(objectName, repeatTimes=10, repeatInterval=500, step=0):
     If the widget is not found try agail after a "repeatInterval"
     and repeat no more that "repeatTimes"
     """
+
     if not objectName:
         return
 
-    for d in iface.mainWindow().findChildren(QDialog):
-        if d.objectName() != objectName:
-            continue
-        d.setWindowModality(False)
+    l = QgsApplication.instance().topLevelWidgets()
 
-        return
+    for d in l:
+        for dd in d.findChildren(QDialog):
+            if dd.objectName() != objectName:
+                continue
+
+            dd.setWindowModality(False)
+            return
 
     if repeatTimes == step:
         return
 
-    # if here => not found 
-    QTimer.singleShot(repeatInterval, lambda: unmodalWidget(objectName, repeatTimes, repeatInterval, step+1))   
-
+        # if here => not found
+    QTimer.singleShot(repeatInterval,
+                      lambda: unmodalWidget(objectName, repeatTimes, repeatInterval,
+                                            step + 1))
