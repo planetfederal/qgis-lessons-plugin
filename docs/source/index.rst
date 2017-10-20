@@ -19,9 +19,11 @@ For developers, instructions on how to write new lessons and add them to the plu
 Documentation content:
 
 .. toctree::
+   :glob:
    :maxdepth: 2
 
    installation
    usage
    writing_lessons
+   *
 
