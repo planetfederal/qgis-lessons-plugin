@@ -11,7 +11,7 @@ import zipfile
 site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/extlibs'))
 
 from qgis.PyQt.QtCore import QDir
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsMessageLog
 
 from lessons.lesson import lessonFromYamlFile
 from lessons.utils import lessonsBaseFolder
@@ -67,8 +67,8 @@ def addLessonsFolder(folder, pluginName):
             moduleName = ".".join(moduleTokens)
             m = __import__(moduleName, fromlist="dummy")
             addLessonModule(m)
-        except:
-            pass
+        except Exception as e:
+            QgsMessageLog.logMessage("Can not add lessons folder {}:\n{}".format(folder, str(e)), "Lessons")
 
     folders = [x for x in os.listdir(folder) if isYamlLessonFolder(folder, x)]
     for f in folders:
@@ -86,8 +86,8 @@ def removeLessonsFolder(folder, pluginName):
             moduleName = ".".join(moduleTokens)
             m = __import__(moduleName, fromlist="dummy")
             removeLessonModule(m)
-        except:
-            pass
+        except Exception as e:
+            QgsMessageLog.logMessage("Can not remove lessons folder {}:\n{}".format(folder, str(e)), "Lessons")
 
     folders = [x for x in os.listdir(folder) if isYamlLessonFolder(folder, x)]
     for f in folders:
@@ -135,9 +135,10 @@ def loadLessonsFromPaths(paths):
                         try:
                             f = os.path.join(path, folder, subfolder, "__init__.py")
                             if os.path.exists(f):
-                                m = imp.load_source("%s.%s" % (folder, subfolder), f)
+                                m = imp.load_source("{}.{}".format(folder, subfolder), f)
                                 addLessonModule(m)
-                        except:
+                        except Exception as e:
+                            QgsMessageLog.logMessage("Can not load lesson from {}:\n{}".format(f, str(e)), "Lessons")
                             hasErrors = True
 
                         if isYamlLessonFolder(os.path.join(path, folder), subfolder):
