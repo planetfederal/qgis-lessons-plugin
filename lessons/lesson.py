@@ -239,7 +239,11 @@ def lessonFromYamlFile(f):
             else:
                 _endcheck = None
 
-            lesson.addStep(step["name"], step["description"], function, prestep, endcheck=_endcheck, steptype=Step.MANUALSTEP)
+            try:
+                lesson.addStep(step["name"], step["description"], function, prestep, endcheck=_endcheck, steptype=Step.MANUALSTEP)
+            except Exception as e:
+                QgsMessageLog.logMessage("Can not load lesson from {}:\n{}".format(f, str(e)), "Lessons")
+                return None
 
     if "nextLessons" in lessonDict:
         for nextLesson in lessonDict["nextLessons"]:

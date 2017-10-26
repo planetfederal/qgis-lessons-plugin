@@ -15,7 +15,7 @@ from qgiscommons2.gui import (addAboutMenu,
                              removeAboutMenu,
                              addHelpMenu,
                              removeHelpMenu)
-from qgiscommons2.gui.settings import (addSettingsMenu, 
+from qgiscommons2.gui.settings import (addSettingsMenu,
                                       removeSettingsMenu)
 from qgiscommons2.settings import readSettings
 
@@ -72,8 +72,11 @@ class LessonsPlugin(object):
 
         self.lessonwidget = None
 
-        lessons.loadLessons()
-
+        hasErrors = lessons.loadLessons()
+        if hasErrors:
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "Lessons",
+                                "Some lessons were not loaded. Check QGIS log for more details")
 
     def start(self):
         if self.lessonWidget is not None:

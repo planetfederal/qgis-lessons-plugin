@@ -104,6 +104,8 @@ def installLessonsFromZipFile(path):
 
 
 def loadLessonsFromPaths(paths):
+    print "loadLessonsFromPaths called..."
+    hasErrors = False
     for path in paths:
         for folder in os.listdir(path):
             if os.path.isdir(os.path.join(path, folder)):
@@ -120,16 +122,21 @@ def loadLessonsFromPaths(paths):
                                 m = imp.load_source("%s.%s" % (folder, subfolder), f)
                                 addLessonModule(m)
                         except:
-                            pass
+                            hasErrors = True
                         if isYamlLessonFolder(os.path.join(path, folder), subfolder):
+                            print "YAML lesson"
                             lesson = lessonFromYamlFile(os.path.join(path, folder, subfolder, "lesson.yaml"))
                             if lesson:
                                 _addLesson(lesson)
+                            else:
+                                hasErrors = True
+    return hasErrors
 
 
 def loadLessons():
     """Load all lessons belonging to the plugin or installed in the configured
     lesson location path."""
+    print "loadLessons called..."
     paths = []
     # set local lessons path
     folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '_lessons'))
@@ -138,7 +145,7 @@ def loadLessons():
     # set configured lesson location
     paths.append(lessonsFolder())
     # then load all lessons
-    loadLessonsFromPaths(paths)
+    return loadLessonsFromPaths(paths)
 
 
 def classFactory(iface):
