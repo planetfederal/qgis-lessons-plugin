@@ -1,22 +1,29 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import absolute_import
-import site
+
 import os
-site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/extlibs'))
 import imp
 import glob
+import site
 import zipfile
-from lessons.lesson import lessonFromYamlFile
-from lessons.utils import lessonsBaseFolder
+
+site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/extlibs'))
+
 from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
+
+from lessons.lesson import lessonFromYamlFile
+from lessons.utils import lessonsBaseFolder
 
 lessons = []
 groups = {}
 
+
 def addGroup(name, description):
     global groups
     groups[name] = description
+
 
 def _addLesson(toAdd):
     for lesson in lessons:
@@ -24,26 +31,32 @@ def _addLesson(toAdd):
             return
     lessons.append(toAdd)
 
+
 def _removeLesson(toRemove):
     for lesson in lessons[::-1]:
         if lesson.name == toRemove.name and lesson.group == toRemove.group:
             lessons.remove(lesson)
 
+
 def addLessonModule(module):
     if "lesson" in dir(module):
         _addLesson(module.lesson)
+
 
 def removeLessonModule(module):
     if "lesson" in dir(module):
         _removeLesson(module.lesson)
 
+
 def isPackage(folder, subfolder):
     path = os.path.join(folder, subfolder)
-    return os.path.isdir(path) and glob.glob(os.path.join(path, '__init__.py*'))
+    return os.path.isdir(path) and glob.glob(os.path.join(path, "__init__.py*"))
+
 
 def isYamlLessonFolder(folder, subfolder):
     path = os.path.join(folder, subfolder)
-    return os.path.isdir(path) and glob.glob(os.path.join(path, 'lesson.yaml'))
+    return os.path.isdir(path) and glob.glob(os.path.join(path, "lesson.yaml"))
+
 
 def addLessonsFolder(folder, pluginName):
     packages = [x for x in os.listdir(folder) if os.path.isdir(os.path.join(folder, x))]
@@ -56,6 +69,7 @@ def addLessonsFolder(folder, pluginName):
             addLessonModule(m)
         except:
             pass
+
     folders = [x for x in os.listdir(folder) if isYamlLessonFolder(folder, x)]
     for f in folders:
         lesson = lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml"))
@@ -74,6 +88,7 @@ def removeLessonsFolder(folder, pluginName):
             removeLessonModule(m)
         except:
             pass
+
     folders = [x for x in os.listdir(folder) if isYamlLessonFolder(folder, x)]
     for f in folders:
         lesson = lessonFromYamlFile(os.path.join(folder, f, "lesson.yaml"))
@@ -85,6 +100,7 @@ def lessonFromName(group, name):
     for lesson in lessons:
         if lesson.group == group and lesson.name == name:
             return lesson
+
 
 # maintained this fuction to does not change plugin api from external calls
 # it can be substituted directly with lessonsBaseFolder()
@@ -104,7 +120,6 @@ def installLessonsFromZipFile(path):
 
 
 def loadLessonsFromPaths(paths):
-    print "loadLessonsFromPaths called..."
     hasErrors = False
     for path in paths:
         for folder in os.listdir(path):
@@ -114,6 +129,7 @@ def loadLessonsFromPaths(paths):
                     if os.path.exists(groupFile):
                         groups[folder.replace("_", " ")] = groupFile
                         break
+
                 for subfolder in os.listdir(os.path.join(path, folder)):
                     if os.path.isdir(os.path.join(path, folder, subfolder)):
                         try:
@@ -123,8 +139,8 @@ def loadLessonsFromPaths(paths):
                                 addLessonModule(m)
                         except:
                             hasErrors = True
+
                         if isYamlLessonFolder(os.path.join(path, folder), subfolder):
-                            print "YAML lesson"
                             lesson = lessonFromYamlFile(os.path.join(path, folder, subfolder, "lesson.yaml"))
                             if lesson:
                                 _addLesson(lesson)
@@ -134,17 +150,18 @@ def loadLessonsFromPaths(paths):
 
 
 def loadLessons():
-    """Load all lessons belonging to the plugin or installed in the configured
-    lesson location path."""
-    print "loadLessons called..."
+    """Load all lessons belonging to the plugin or installed
+    in the configured lesson location path.
+    """
     paths = []
     # set local lessons path
-    folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '_lessons'))
+    folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "_lessons"))
     if QDir(folder).exists():
         paths.append(folder)
+
     # set configured lesson location
     paths.append(lessonsFolder())
-    # then load all lessons
+
     return loadLessonsFromPaths(paths)
 
 

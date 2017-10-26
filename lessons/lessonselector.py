@@ -4,18 +4,19 @@ import os
 import codecs
 from collections import defaultdict
 
+import markdown
+
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl, Qt
 from qgis.PyQt.QtGui import QIcon, QTextDocument, QCursor, QApplication
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox, QFileDialog, QMessageBox
-from qgis.utils import QGis
-from lessons import lessons, _removeLesson, groups, installLessonsFromZipFile
-import codecs
-import markdown
 
+from qgis.utils import QGis
+
+from lessons import lessons, _removeLesson, groups, installLessonsFromZipFile
 
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(os.path.dirname(__file__), 'lessonselector.ui'))
+    os.path.join(os.path.dirname(__file__), "lessonselector.ui"))
 
 
 class LessonSelector(BASE, WIDGET):
@@ -51,7 +52,7 @@ class LessonSelector(BASE, WIDGET):
             allLessons[lesson.group].append(lesson)
 
         self.lessonsTree.clear()
-        lessonIcon = QIcon(os.path.dirname(__file__) + '/lesson.gif')
+        lessonIcon = QIcon(os.path.dirname(__file__) + "/lesson.gif")
         for group, groupLessons in allLessons.items():
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
@@ -63,10 +64,10 @@ class LessonSelector(BASE, WIDGET):
                 lessonItem.setIcon(0, lessonIcon)
                 groupItem.addChild(lessonItem)
                 if lesson.version[0] is not None and str(lesson.version[0]) > QGis.QGIS_VERSION:
-                    lessonItem.setText(0, lesson.name + " (requires QGIS >= %s)" % lesson.version[0])
+                    lessonItem.setText(0, lesson.name + " (requires QGIS >= {})".format(lesson.version[0]))
                     lessonItem.setDisabled(True)
                 if lesson.version[1] is not None and str(lesson.version[1]) < QGis.QGIS_VERSION:
-                    lessonItem.setText(0, lesson.name + " (requires QGIS <= %s)" % lesson.version[1])
+                    lessonItem.setText(0, lesson.name + " (requires QGIS <= {})".format(lesson.version[1]))
                     lessonItem.setDisabled(True)
             self.lessonsTree.addTopLevelItem(groupItem)
 
@@ -95,7 +96,7 @@ class LessonSelector(BASE, WIDGET):
                                                                QUrl.fromUserInput(item.lesson.description).toString())
                     self.webView.setHtml(html)
                 else:
-                    self.webView.setHtml("<p>%s</p>" % item.lesson.description)
+                    self.webView.setHtml("<p>{}</p>".format(item.lesson.description))
             else:
                 self.btnRunLesson.setEnabled(False)
                 self.btnRemove.setText("Uninstall lessons group")
@@ -130,7 +131,7 @@ class LessonSelector(BASE, WIDGET):
         if hasattr(item, "lesson"):
             reply = QMessageBox.question(None,
                                      "Confirmation",
-                                     'Are you sure you want to uninstall this lesson?',
+                                     "Are you sure you want to uninstall this lesson?",
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
             if reply == QMessageBox.Yes:
@@ -144,7 +145,7 @@ class LessonSelector(BASE, WIDGET):
         else:
             reply = QMessageBox.question(None,
                          "Confirmation",
-                         'Are you sure you want to uninstall this group of lessons?',
+                         "Are you sure you want to uninstall this group of lessons?",
                          QMessageBox.Yes | QMessageBox.No,
                          QMessageBox.No)
             if reply == QMessageBox.Yes:

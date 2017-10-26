@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from builtins import range
 from builtins import object
-# -*- coding: utf-8 -*-
 
 import os
 import traceback
@@ -54,6 +55,7 @@ class Step(object):
             return self.params[func]
         else:
             return tuple()
+
 
 class Lesson(object):
 
@@ -131,9 +133,9 @@ class Lesson(object):
 
                 if prestep["name"].startswith("utils."):
                     functionName = prestep["name"].split(".")[1]
-                    function = getattr(import_module('lessons.utils'), functionName)
+                    function = getattr(import_module("lessons.utils"), functionName)
                 else:
-                    mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
+                    mod = imp.load_source("functions", os.path.join(self.folder, "functions.py"))
                     function = getattr(mod, function["name"])
 
                 _prestep = function
@@ -152,7 +154,7 @@ class Lesson(object):
 
                 if endcheck["name"].startswith("utils."):
                     functionName = endcheck["name"].split(".")[1]
-                    function = getattr(import_module('lessons.utils'), functionName)
+                    function = getattr(import_module("lessons.utils"), functionName)
                 else:
                     mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
                     function = getattr(mod, endcheck["name"])
@@ -174,15 +176,15 @@ class Lesson(object):
             if closest:
                 menu, action = menuFromName(closest[0])
             else:
-                QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s" % menuName,
-                                         level=QgsMessageLog.WARNING)
+                QgsMessageLog.logMessage("Lesson '{}' contains a wrong menu name: '{}'".format(self.name, menuName),
+                                         "Lessons")
                 return None
         if name is None:
-            name = "Click on '%s' menu item." % action.text().replace("&","")
+            name = "Click on '{}' menu item.".format(action.text().replace("&",""))
         if description is None:
-            description = "<p>Click on <b>%s</b> menu item.</p>" \
-                          "<p>Once you click, the lesson will automatically move to the next step.</p>"\
-                          % menuName.replace("/"," > ")
+            description = "<p>Click on <b>{}</b> menu item.</p>" \
+                          "<p>Once you click, the lesson will " \
+                          "automatically move to the next step.</p>".format(menuName.replace("/"," > "))
 
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
