@@ -38,7 +38,7 @@ def loadLayer(filename, name = None):
 
     :param filename: the path to the file to load.
     :param name: the name to use for adding the layer to the current project.
-    If not passed or None, it will use the filename basename
+           If not passed or None, it will use the filename basename
     """
     name = name or os.path.splitext(os.path.basename(filename))[0]
     qgslayer = QgsVectorLayer(filename, name, "ogr")
@@ -52,8 +52,12 @@ def loadLayer(filename, name = None):
 
 def loadLayerNoCrsDialog(filename, name=None):
     """ Tries to load a layer from the given file
-    Same as the loadLayer method, but it does not ask for CRS, regardless of current
-    configuration in QGIS settings
+    Same as the loadLayer method, but it does not ask for CRS, regardless of
+    the current configuration in QGIS settings
+
+    :param filename: the path to the file to load.
+    :param name: the name to use for adding the layer to the current project.
+           If not passed or None, it will use the filename basename
     """
     settings = QSettings()
     prjSetting = settings.value("/Projections/defaultBehaviour")
@@ -151,6 +155,13 @@ def lessonPluginBaseFolder():
 
 
 def copyLessonData(filename, lessonFolderName):
+    """
+    Copies file to the user qgislessons/data folder to be used in the lesson
+
+    :param filename: name of the data file to copy
+    :param lessonFolderName: folder where the data file is stored (relative to
+           the lessons group)
+    """
     dest = os.path.join(lessonDataFolder(lessonFolderName), os.path.basename(filename))
     shutil.copy2(filename, dest)
 
