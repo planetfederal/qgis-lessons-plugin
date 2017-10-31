@@ -18,7 +18,7 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../../lessons'))
+sys.path.insert(0, os.path.abspath('../..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -29,6 +29,8 @@ sys.path.insert(0, os.path.abspath('../../lessons'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc']
+
+autodoc_mock_imports = ["qgiscommons2.settings"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
