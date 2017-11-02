@@ -4,6 +4,7 @@ from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextBrowser
 from qgis.utils import iface
 from lessons import lessonFromName
 
+
 class LessonFinishedDialog(QDialog):
 
     def __init__(self, lesson):

@@ -245,12 +245,12 @@ The name and group name must match the name and group name of the lesson that
 you want to add. Ideally, those lessons should be in the same lessons group as
 the current lesson to ensure that they are installed and available as well.
 
-The ``lessons.utils`` module also include a couple of methods to use in
+The ``lessons.utils`` module also include a few methods to use in ``prestep``,
 ``endsignals``, ``endsignalchecks``, and ``endcheck`` arguments of the
 ``addStep()``:
 
-.. automodule:: utils
-   :members: layerActive, setActiveLayer, layerExists, checkLayerCrs
+.. automodule:: lessons.utils
+   :members: loadLayer, loadLayerNoCrsDialog, copyLessonData, layerActive, setActiveLayer, layerExists, checkLayerCrs
 
 Python example
 ..............

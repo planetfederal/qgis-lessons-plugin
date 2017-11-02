@@ -1,30 +1,32 @@
-from builtins import str
 # -*- coding: utf-8 -*-
+
+from builtins import str
 
 import os
 import re
 import time
 import shutil
+import threading
 
-from qgis.PyQt.QtCore import QDir, QSettings, Qt, QLocale
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import QDir, QSettings, Qt, QLocale, QTimer
+from qgis.PyQt.QtGui import QCursor, QDialog
 from qgis.PyQt.QtWidgets import QMenu, QApplication
 
 from qgis.core import (QgsMapLayerRegistry,
                        QgsMapLayer,
                        QgsVectorLayer,
-                       QgsRasterLayer)
-from qgis.utils import iface
+                       QgsRasterLayer,
+                       QgsApplication)
+from qgis.utils import iface, plugins
 
-from qgiscommons2.settings import pluginSetting
+from qgiscommons2.settings import pluginSetting, setPluginSetting
 
 
 def layerFromName(name):
-    '''
-    Returns the layer from the current project with the passed name
+    """ Returns the layer from the current project with the passed name
     Returns None if no layer with that name is found
     If several layers with that name exist, only the first one is returned
-    '''
+    """
     layers = list(QgsMapLayerRegistry.instance().mapLayers().values())
     for layer in layers:
         if layer.name() == name:
@@ -32,35 +34,36 @@ def layerFromName(name):
 
 
 def loadLayer(filename, name = None):
-    '''
-    Tries to load a layer from the given file
+    """ Tries to load a layer from the given file
 
     :param filename: the path to the file to load.
-
     :param name: the name to use for adding the layer to the current project.
-    If not passed or None, it will use the filename basename
-    '''
+           If not passed or None, it will use the filename basename
+    """
     name = name or os.path.splitext(os.path.basename(filename))[0]
-    qgslayer = QgsVectorLayer(filename, name, 'ogr')
+    qgslayer = QgsVectorLayer(filename, name, "ogr")
     if not qgslayer.isValid():
         qgslayer = QgsRasterLayer(filename, name)
         if not qgslayer.isValid():
-            raise RuntimeError('Could not load layer: ' + str(filename))
+            raise RuntimeError("Could not load layer: {}".format(filename))
 
     return qgslayer
 
 
 def loadLayerNoCrsDialog(filename, name=None):
-    '''
-    Tries to load a layer from the given file
-    Same as the loadLayer method, but it does not ask for CRS, regardless of current
-    configuration in QGIS settings
-    '''
+    """ Tries to load a layer from the given file
+    Same as the loadLayer method, but it does not ask for CRS, regardless of
+    the current configuration in QGIS settings
+
+    :param filename: the path to the file to load.
+    :param name: the name to use for adding the layer to the current project.
+           If not passed or None, it will use the filename basename
+    """
     settings = QSettings()
-    prjSetting = settings.value('/Projections/defaultBehaviour')
-    settings.setValue('/Projections/defaultBehaviour', '')
+    prjSetting = settings.value("/Projections/defaultBehaviour")
+    settings.setValue("/Projections/defaultBehaviour", "")
     layer = loadLayer(filename, name)
-    settings.setValue('/Projections/defaultBehaviour', prjSetting)
+    settings.setValue("/Projections/defaultBehaviour", prjSetting)
     return layer
 
 
@@ -112,9 +115,9 @@ def getMenuPaths():
 
 
 def lessonDataFolder(lessonFolderName):
-    '''Return the folder where to store lessons data. It is created inside the
-    lessonPluginBaseFolder().
-    '''
+    """ Returns the folder where to store lessons data. It is created
+    inside the lessonPluginBaseFolder().
+    """
     folder = os.path.join(lessonPluginBaseFolder(), "data", lessonFolderName)
     if not QDir(folder).exists():
         QDir().mkpath(folder)
@@ -123,8 +126,9 @@ def lessonDataFolder(lessonFolderName):
 
 
 def lessonsBaseFolder():
-    '''Return the folder where to store lessons. It is created inside the lessonPluginBaseFolder().
-    '''
+    """Returns the folder where to store lessons. It is created
+    inside the lessonPluginBaseFolder().
+    """
     folder = os.path.join(lessonPluginBaseFolder(), "lessons")
     if not QDir(folder).exists():
         QDir().mkpath(folder)
@@ -133,27 +137,39 @@ def lessonsBaseFolder():
 
 
 def lessonPluginBaseFolder():
-    '''Return the base folder where to store lessons and data. If in setting only a name
-    is specified but not a valid folder => Assumed the folder will be created in $HOME path.
-    '''
-    folder = pluginSetting('BaseFolder')
-    # check if the value is only a basname => create it in $HOME
+    """Returns the base folder where to store lessons and data.
+    If only folder name specified instead of full path, the folder
+    will be created in the $HOME
+    """
+    folder = pluginSetting("BaseFolder")
+    # check if the value is only a basename and create directory in $HOME
     if not QDir(folder).exists():
         if folder == os.path.basename(folder):
             folder = os.path.join(os.path.expanduser("~"), folder)
-    # create it
+            setPluginSetting("BaseFolder", folder)
+
     if not QDir(folder).exists():
         QDir().mkpath(folder)
+
     return QDir.toNativeSeparators(folder)
 
 
 def copyLessonData(filename, lessonFolderName):
+    """
+    Copies file to the user qgislessons/data folder to be used in the lesson
+
+    :param filename: name of the data file to copy
+    :param lessonFolderName: folder where the data file is stored (relative to
+           the lessons group)
+    """
     dest = os.path.join(lessonDataFolder(lessonFolderName), os.path.basename(filename))
     shutil.copy2(filename, dest)
 
 
 def unfoldMenu(menu, action):
-    '''Unfolds a menu and all parent menus, and highlights an entry in that menu'''
+    """Unfolds a menu and all parent menus, and highlights an entry
+    in that menu
+    """
     menus = []
     while isinstance(menu, QMenu):
         menus.append(menu)
@@ -166,7 +182,7 @@ def unfoldMenu(menu, action):
 def openProject(projectFile):
     folder = os.path.dirname(projectFile)
     projectName = os.path.basename(projectFile)
-    tempDir = os.path.join(QDir.tempPath(), 'lessons', 'lesson' + str(time.time()))
+    tempDir = os.path.join(QDir.tempPath(), "lessons", "lesson{}".format(str(time.time())))
     dest = os.path.abspath(tempDir)
     shutil.copytree(folder, dest)
     tempProjectFile = os.path.join(dest, projectName)
@@ -213,9 +229,9 @@ def layerExists(layerName, typeName):
     if len(layers) == 0:
         return False
 
-    if typeName.lower() == 'raster':
+    if typeName.lower() == "raster":
         layerType = QgsMapLayer.RasterLayer
-    elif typeName.lower() == 'vector':
+    elif typeName.lower() == "vector":
         layerType = QgsMapLayer.VectorLayer
     else:
         layerType = QgsMapLayer.PluginLayer
@@ -240,3 +256,32 @@ def checkLayerCrs(layerName, crs):
             return True
 
     return False
+
+
+def unmodalWidget(objectName, repeatTimes=10, repeatInterval=500, step=0):
+    """Look for a widget in the QGIS hierarchy to set it as
+    not modal.
+    If the widget is not found try agail after a "repeatInterval"
+    and repeat no more that "repeatTimes"
+    """
+
+    if not objectName:
+        return
+
+    l = QgsApplication.instance().topLevelWidgets()
+
+    for d in l:
+        for dd in d.findChildren(QDialog):
+            if dd.objectName() != objectName:
+                continue
+
+            dd.setWindowModality(False)
+            return
+
+    if repeatTimes == step:
+        return
+
+    # if here => not found
+    QTimer.singleShot(repeatInterval,
+                      lambda: unmodalWidget(objectName, repeatTimes, repeatInterval,
+                                            step + 1))

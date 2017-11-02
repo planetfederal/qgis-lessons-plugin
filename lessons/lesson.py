@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from builtins import range
 from builtins import object
-# -*- coding: utf-8 -*-
 
 import os
 import traceback
@@ -44,6 +45,8 @@ class Step(object):
 
         if func == "function":
             return self.function(*params)
+        elif func == "prestep":
+            return self.prestep(*params)
         elif func == "endcheck":
             return self.endcheck(*params)
 
@@ -52,6 +55,7 @@ class Step(object):
             return self.params[func]
         else:
             return tuple()
+
 
 class Lesson(object):
 
@@ -70,7 +74,7 @@ class Lesson(object):
         path = os.path.join(os.path.dirname(self.folder), "style.css")
         if os.path.exists(path):
             with codecs.open(path, encoding="utf-8") as f:
-                self.style = "<style>\n" + "".join(f.readlines()) + "\n</style>\n"
+                self.style = "<style>\n" + f.read() + "\n</style>\n"
         path = os.path.join(self.folder, "project.qgs")
         if os.path.exists(path):
             self.addStep("Open project", "Open project", lambda: openProject(path))
@@ -89,10 +93,9 @@ class Lesson(object):
                 for i in [qgisLocale(), "en", ""]:
                     path = os.path.join(self.folder, i, f)
                     if os.path.exists(path):
-                        f = path
-                        break
+                        return path
 
-        return f
+        return os.path.join(self.folder, f)
 
     def addStep(self, name, description, function=None, prestep=None, endsignals=None,
                 endsignalchecks=None, endcheck=lambda:True, steptype=1):
@@ -130,9 +133,9 @@ class Lesson(object):
 
                 if prestep["name"].startswith("utils."):
                     functionName = prestep["name"].split(".")[1]
-                    function = getattr(import_module('lessons.utils'), functionName)
+                    function = getattr(import_module("lessons.utils"), functionName)
                 else:
-                    mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
+                    mod = imp.load_source("functions", os.path.join(self.folder, "functions.py"))
                     function = getattr(mod, function["name"])
 
                 _prestep = function
@@ -151,10 +154,10 @@ class Lesson(object):
 
                 if endcheck["name"].startswith("utils."):
                     functionName = endcheck["name"].split(".")[1]
-                    function = getattr(import_module('lessons.utils'), functionName)
+                    function = getattr(import_module("lessons.utils"), functionName)
                 else:
                     mod = imp.load_source('functions', os.path.join(self.folder, "functions.py"))
-                    function = getattr(mod, function["name"])
+                    function = getattr(mod, endcheck["name"])
 
                 _endcheck = function
             else:
@@ -173,15 +176,15 @@ class Lesson(object):
             if closest:
                 menu, action = menuFromName(closest[0])
             else:
-                QgsMessageLog.logMessage("Lesson contains a wrong menu name: %s" % menuName,
-                                         level=QgsMessageLog.WARNING)
+                QgsMessageLog.logMessage("Lesson '{}' contains a wrong menu name: '{}'".format(self.name, menuName),
+                                         "Lessons")
                 return None
         if name is None:
-            name = "Click on '%s' menu item." % action.text().replace("&","")
+            name = "Click on '{}' menu item.".format(action.text().replace("&",""))
         if description is None:
-            description = "<p>Click on <b>%s</b> menu item.</p>" \
-                          "<p>Once you click, the lesson will automatically move to the next step.</p>"\
-                          % menuName.replace("/"," > ")
+            description = "<p>Click on <b>{}</b> menu item.</p>" \
+                          "<p>Once you click, the lesson will " \
+                          "automatically move to the next step.</p>".format(menuName.replace("/"," > "))
 
         def checkMenu(triggeredAction):
             return triggeredAction.text() == action.text()
@@ -238,7 +241,11 @@ def lessonFromYamlFile(f):
             else:
                 _endcheck = None
 
-            lesson.addStep(step["name"], step["description"], function, prestep, endcheck=_endcheck, steptype=Step.MANUALSTEP)
+            try:
+                lesson.addStep(step["name"], step["description"], function, prestep, endcheck=_endcheck, steptype=Step.MANUALSTEP)
+            except Exception as e:
+                QgsMessageLog.logMessage("Can not load lesson from {}:\n{}".format(f, str(e)), "Lessons")
+                return None
 
     if "nextLessons" in lessonDict:
         for nextLesson in lessonDict["nextLessons"]:

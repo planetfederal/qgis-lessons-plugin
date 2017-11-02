@@ -1,7 +1,12 @@
-from builtins import range
 # -*- coding: utf-8 -*-
 
+from builtins import range
+
 import os
+import codecs
+from functools import partial
+
+import markdown
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QUrl, pyqtSignal
@@ -13,12 +18,9 @@ from lessons.utils import execute
 from lessons.lesson import Step
 from lessons.lessonfinisheddialog import LessonFinishedDialog
 
-import markdown
-import codecs
-from functools import partial
-
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(os.path.dirname(__file__), 'lessonwidget.ui'))
+    os.path.join(os.path.dirname(__file__), "lessonwidget.ui"))
+
 
 class LessonWidget(BASE, WIDGET):
 
@@ -38,14 +40,14 @@ class LessonWidget(BASE, WIDGET):
         self.resetGui()
         self.listSteps.clear()
         self.lesson = lesson
-        bulletIcon = QIcon(os.path.dirname(__file__) + '/bullet.png')
+        bulletIcon = QIcon(os.path.dirname(__file__) + "/bullet.png")
         for step in lesson.steps:
             item = QListWidgetItem(step.name)
             self.listSteps.addItem(item)
             item.setHidden(step.steptype == Step.AUTOMATEDSTEP)
             item.setIcon(bulletIcon)
         self.currentStep = 0
-        self.lessonNameLabel.setText("<b>Current lesson:</b> %s" % lesson.name)
+        self.lessonNameLabel.setText("<b>Current lesson:</b> {}".format(lesson.name))
         self.btnMove.setText(self.tr("Next step"))
         self.btnMove.setToolTip(self.tr("Move to next step"))
         self.moveToNextStep()
@@ -62,7 +64,8 @@ class LessonWidget(BASE, WIDGET):
         step = self.lesson.steps[self.currentStep]
         if step.endcheck is not None:
             ret = step.runFunction("endcheck")
-            if ret != True: #We support both bool and str return values, for backwards compatibility
+            if ret != True:
+                # We support both bool and str return values, for backwards compatibility
                 if ret == False:
                     msg = ("It seems that the previous step was not correctly completed."
                             "\nPlease review and complete the instructions before moving"
@@ -119,7 +122,7 @@ class LessonWidget(BASE, WIDGET):
             self.listSteps.scrollToItem(item, QAbstractItemView.PositionAtCenter)
             if os.path.exists(step.description):
                 with codecs.open(step.description, encoding="utf-8") as f:
-                    html = "".join(f.readlines())
+                    html = f.read()
                 if step.description.endswith(".md"):
                     html = markdown.markdown(html)
                 html = self.lesson.style + html
