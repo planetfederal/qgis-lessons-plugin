@@ -9,6 +9,7 @@ class LessonFinishedDialog(QDialog):
 
     def __init__(self, lesson):
         super(LessonFinishedDialog, self).__init__(iface.mainWindow())
+        self.reopen = False
         self.lesson = lesson
         self.setWindowTitle("Lesson finished")
         self.verticalLayout = QVBoxLayout()
@@ -20,7 +21,9 @@ class LessonFinishedDialog(QDialog):
             txt += "<p>We recommend you the following lessons to continue:</p><ul>"
             for i, nextLesson in enumerate(lesson.nextLessons):
                 txt+="<li><a href='%i'>%s</a>" % (i, nextLesson[1])
-            txt += "</ul><p>If you don't want to run more lessons, just <a href='exit'>close this dialog.</a></p>"
+        
+        txt += "</ul><p>If you don't want to run more lessons, just <a href='exit'>close this dialog.</a></p>"
+        txt += "<p>If you want to run another lesson, click <a href='reopen'>here.</a> to reopen the lesson selector</p>"
 
         self.text = QTextBrowser()
         self.text.anchorClicked.connect(self.linkClicked)
@@ -32,6 +35,8 @@ class LessonFinishedDialog(QDialog):
         self.nextLesson = None
 
     def linkClicked(self, url):
-        if url.path() != "exit":
+        if url.path() not in ["exit", "reopen"]:
             self.nextLesson = lessonFromName(*self.lesson.nextLessons[int(url.path())])
+        if url.path() =="reopen":
+            self.reopen = True
         self.close()

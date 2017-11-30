@@ -24,7 +24,7 @@ WIDGET, BASE = uic.loadUiType(
 
 class LessonWidget(BASE, WIDGET):
 
-    lessonFinished = pyqtSignal()
+    lessonFinished = pyqtSignal(bool)
 
     def __init__(self, lesson):
         super(LessonWidget, self).__init__()
@@ -105,7 +105,7 @@ class LessonWidget(BASE, WIDGET):
             if dlg.nextLesson is not None:
                 self.init(dlg.nextLesson)
             else:
-                self.finishLesson()
+                self.finishLesson(dlg.reopen)
         else:
             if self.currentStep == len(self.lesson.steps) - 1:
                 self.btnMove.setText(self.tr("Finish"))
@@ -150,10 +150,10 @@ class LessonWidget(BASE, WIDGET):
                 self.btnRunStep.setEnabled(False)
                 self.btnMove.setEnabled(step.endsignals is None)
 
-    def finishLesson(self):
+    def finishLesson(self, reopen):
         self.setVisible(False)
 
-        self.lessonFinished.emit()
+        self.lessonFinished.emit(reopen)
 
     def resetGui(self):
         self.btnMove.setText(self.tr("Next step"))
