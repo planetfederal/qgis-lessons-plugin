@@ -11,7 +11,10 @@ from qgis.PyQt.QtCore import QUrl, Qt
 from qgis.PyQt.QtGui import QIcon, QTextDocument, QCursor
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox, QFileDialog, QMessageBox, QApplication
 
-from qgis.utils import Qgis
+try:
+    from qgis.utils import Qgis
+except:
+    from qgis.utils import QGis as Qgis
 
 from lessons import lessons, _removeLesson, groups, installLessonsFromZipFile
 
