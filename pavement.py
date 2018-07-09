@@ -59,13 +59,52 @@ def read_requirements():
     not_comments = lambda s,e: [ l for l in lines[s:e] if l[0] != '#']
     return not_comments(0, idx), not_comments(idx+1, None)
 
+@task
+def install_lessons(options):
+    """Install sample lessons to QGIS plugin directory
+    """
+    src = path(__file__).dirname() / "examplelessons"
+    if os.name == 'nt':
+        dst = path('~/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / "examplelessons"
+    else:
+        dst = path('~/.local/share/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / "examplelessons"
+    src = src.abspath()
+    dst = dst.abspath()
+    if hasattr(src, 'symlink'):
+        src.symlink(dst)
+    else:
+        dst.rmtree()
+        src.copytree(dst)
 
-def _install(folder):
+@task
+@cmdopts([
+    ('clean', 'c', 'clean out dependencies first'),
+])
+def setup():
+    clean = getattr(options, 'clean', False)
+    ext_libs = options.plugin.ext_libs
+    ext_src = options.plugin.ext_src
+    if clean:
+        ext_libs.rmtree()
+    ext_libs.makedirs()
+    runtime, test = read_requirements()
+    os.environ['PYTHONPATH']=ext_libs.abspath()
+    for req in runtime + test:
+        sh('easy_install -a -d %(ext_libs)s %(dep)s' % {
+            'ext_libs' : ext_libs.abspath(),
+            'dep' : req
+        })
+
+@task
+def install(options):
     '''install plugin to qgis'''
     builddocs(options)
     plugin_name = options.plugin.name
     src = path(__file__).dirname() / plugin_name
-    dst = path('~').expanduser() / folder / 'python' / 'plugins' / plugin_name
+    if os.name == 'nt':
+        dst = path('~/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / plugin_name
+    else:
+        dst = path('~/.local/share/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / plugin_name
     src = src.abspath()
     dst = dst.abspath()
     if not hasattr(os, 'symlink'):
@@ -81,54 +120,6 @@ def _install(folder):
             docs_dest.mkdir()
         if not docs_link.islink():
             docs.symlink(docs_link)
-
-
-@task
-def install(options):
-    _install(".qgis2")
-
-@task
-def installdev(options):
-    _install(".qgis-dev")
-
-@task
-def install3(options):
-    _install(".qgis3")
-
-@task
-def install_lessons(options):
-    """Install sample lessons to QGIS plugin directory
-    """
-    src = path(__file__).dirname() / "examplelessons"
-    dst = path('~').expanduser() / '.qgis2' / 'python' / 'plugins' / "examplelessons"
-    src = src.abspath()
-    dst = dst.abspath()
-    if hasattr(src, 'symlink'):
-        src.symlink(dst)
-    else:
-        dst.rmtree()
-        src.copy(dst)
-
-@task
-def setup():
-    """Install run-time dependencies"""
-    clean = getattr(options, 'clean', False)
-    ext_libs = options.plugin.ext_libs
-    old_ext_libs = options.plugin.old_ext_libs
-    ext_src = options.plugin.ext_src
-    if os.path.exists(old_ext_libs):
-        shutil.rmtree(old_ext_libs)
-    if clean:
-        ext_libs.rmtree()
-    ext_libs.makedirs()
-
-    runtime, test = read_requirements()
-    os.environ['PYTHONPATH']=ext_libs.abspath()
-    for req in runtime + test:
-        sh('easy_install -a -d %(ext_libs)s %(dep)s' % {
-            'ext_libs' : ext_libs.abspath(),
-            'dep' : req
-        })
 
 @task
 def install_devtools():
