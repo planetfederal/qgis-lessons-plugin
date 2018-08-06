@@ -21,9 +21,9 @@ class LessonFinishedDialog(QDialog):
             txt += "<p>We recommend you the following lessons to continue:</p><ul>"
             for i, nextLesson in enumerate(lesson.nextLessons):
                 txt+="<li><a href='%i'>%s</a>" % (i, nextLesson[1])
-        
+
         txt += "</ul><p>If you don't want to run more lessons, just <a href='exit'>close this dialog.</a></p>"
-        txt += "<p>If you want to run another lesson, click <a href='reopen'>here.</a> to reopen the lesson selector</p>"
+        txt += "<p>If you want to run another lesson, click <a href='reopen'>here</a> to reopen the lesson selector</p>"
 
         self.text = QTextBrowser()
         self.text.anchorClicked.connect(self.linkClicked)
