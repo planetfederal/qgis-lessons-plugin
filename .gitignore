@@ -49,9 +49,11 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+lessons/docs/
 
 # PyBuilder
 target/
 extlibs
 ext-src
 travis_secrets.tar.gz
+docs/source/settingsconf.rst
