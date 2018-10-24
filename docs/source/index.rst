@@ -7,14 +7,14 @@
    :description: Lessons plugin Documentation
    :keywords: lessons plugin documentation, lessons plugin qgis, tutorials plugin, lessons
 
-Index
-=====
+Welcome to Lessons Documentation
+================================
 
-|current_plugin| is a plugin for QGIS to create and follow step-by-step lessons and tutorials within QGIS.
+*Lessons* is a plugin for QGIS to create and follow step-by-step lessons and tutorials within QGIS.
 
 For users, instruction on how to use the plugin to follow a lesson can be found in :ref:`usage`.
 
-For developers, instructions on how to write new lessons and add them to the plugin can be found in :ref:`writing_lessons`.
+For developers and content creators, instructions on how to write new lessons and add them to the plugin can be found in :ref:`writing_lessons`.
 
 Documentation content:
 
@@ -25,5 +25,4 @@ Documentation content:
    installation
    usage
    writing_lessons
-   *
-
+   settingsconf

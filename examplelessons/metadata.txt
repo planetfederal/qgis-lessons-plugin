@@ -2,7 +2,7 @@
 name=Lessons
 description=Lessons
 version=0.1
-qgisMinimumVersion=2.0
+qgisMinimumVersion=3.0
 author=
 email=
 website=

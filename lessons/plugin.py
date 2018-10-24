@@ -88,9 +88,10 @@ class LessonsPlugin(object):
         if dlg.lesson:
             self.lessonWidget = LessonWidget(dlg.lesson)
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.lessonWidget)
-
-            def lessonFinished():
+            def lessonFinished(reopen):
                 self.lessonWidget = None
                 execute(dlg.lesson.cleanup)
-
+                if reopen:
+                    self.start()
             self.lessonWidget.lessonFinished.connect(lessonFinished)
+

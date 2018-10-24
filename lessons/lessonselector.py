@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import str
+from builtins import range
 import os
 import codecs
 from collections import defaultdict
@@ -8,10 +10,13 @@ import markdown
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl, Qt
-from qgis.PyQt.QtGui import QIcon, QTextDocument, QCursor, QApplication
-from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox, QFileDialog, QMessageBox
+from qgis.PyQt.QtGui import QIcon, QTextDocument, QCursor
+from qgis.PyQt.QtWidgets import QTreeWidgetItem, QDialogButtonBox, QFileDialog, QMessageBox, QApplication
 
-from qgis.utils import QGis
+try:
+    from qgis.utils import Qgis
+except:
+    from qgis.utils import QGis as Qgis
 
 from lessons import lessons, _removeLesson, groups, installLessonsFromZipFile
 
@@ -53,7 +58,7 @@ class LessonSelector(BASE, WIDGET):
 
         self.lessonsTree.clear()
         lessonIcon = QIcon(os.path.dirname(__file__) + "/lesson.gif")
-        for group, groupLessons in allLessons.items():
+        for group, groupLessons in list(allLessons.items()):
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
             groupItem.description = groups.get(group, "")
@@ -117,7 +122,7 @@ class LessonSelector(BASE, WIDGET):
             self.btnRunLesson.setEnabled(False)
 
     def addLessons(self):
-        ret = QFileDialog.getOpenFileName(self, "Select lessons ZIP file" , "", '*.zip')
+        ret, __ = QFileDialog.getOpenFileName(self, "Select lessons ZIP file" , "", '*.zip')
         if ret:
             try:
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

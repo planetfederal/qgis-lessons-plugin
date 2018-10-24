@@ -9,25 +9,24 @@ import shutil
 import threading
 
 from qgis.PyQt.QtCore import QDir, QSettings, Qt, QLocale, QTimer
-from qgis.PyQt.QtGui import QCursor, QDialog
-from qgis.PyQt.QtWidgets import QMenu, QApplication
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QMenu, QApplication, QDialog
 
-from qgis.core import (QgsMapLayerRegistry,
-                       QgsMapLayer,
+from qgis.core import (QgsMapLayer,
                        QgsVectorLayer,
                        QgsRasterLayer,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProject)
 from qgis.utils import iface, plugins
 
 from qgiscommons2.settings import pluginSetting, setPluginSetting
-
-
+    
 def layerFromName(name):
     """ Returns the layer from the current project with the passed name
     Returns None if no layer with that name is found
     If several layers with that name exist, only the first one is returned
     """
-    layers = list(QgsMapLayerRegistry.instance().mapLayers().values())
+    layers = list(QgsProject.instance().mapLayers().values())
     for layer in layers:
         if layer.name() == name:
             return layer
@@ -225,7 +224,7 @@ def layerExists(layerName, typeName):
     """Returns True if layer with the given name exists and
     has specified type ("vector", "raster" or "plugin")
     """
-    layers = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
+    layers = QgsProject.instance().mapLayersByName(layerName)
     if len(layers) == 0:
         return False
 
@@ -247,7 +246,7 @@ def checkLayerCrs(layerName, crs):
     """Returns True if CRS of the given layer matches to the given
     CRS, defined by authid.
     """
-    layers = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
+    layers = QgsProject.instance().mapLayersByName(layerName)
     if len(layers) == 0:
         return False
 
