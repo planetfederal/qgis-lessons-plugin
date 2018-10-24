@@ -3,10 +3,9 @@
 # (c) 2016 Boundless, http://boundlessgeo.com
 # This code is licensed under the GPL 2.0 license.
 #
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
+
 import os
+import sys
 import requests
 import zipfile
 import io
@@ -65,9 +64,11 @@ def install_lessons(options):
     """
     src = path(__file__).dirname() / "examplelessons"
     if os.name == 'nt':
-        dst = path('~/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / "examplelessons"
+        dst = path('~/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / plugin_name
+    elif sys.platform == 'darwin':
+        dst = path(' ~/Library/Application Support/QGIS/QGIS3/profiles/default/plugin').expanduser() / plugin_name
     else:
-        dst = path('~/.local/share/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / "examplelessons"
+        dst = path('~/.local/share/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / plugin_name
     src = src.abspath()
     dst = dst.abspath()
     if hasattr(src, 'symlink'):
@@ -99,10 +100,13 @@ def setup():
 def install(options):
     '''install plugin to qgis'''
     builddocs(options)
+    install_lessons(options)
     plugin_name = options.plugin.name
     src = path(__file__).dirname() / plugin_name
     if os.name == 'nt':
         dst = path('~/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / plugin_name
+    elif sys.platform == 'darwin':
+        dst = path(' ~/Library/Application Support/QGIS/QGIS3/profiles/default/plugin').expanduser() / plugin_name
     else:
         dst = path('~/.local/share/QGIS/QGIS3/profiles/default/python/plugins').expanduser() / plugin_name
     src = src.abspath()
