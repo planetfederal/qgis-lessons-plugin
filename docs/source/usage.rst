@@ -29,31 +29,10 @@ In the dialog's bottom-right corner there is a set of buttons (3):
 Install new lessons
 -------------------
 
-There are three ways of adding new lessons to the :guilabel:`Lesson Library`:
+There are two ways of adding new lessons to the :guilabel:`Lesson Library`:
 
-* Using the Boundless Connect plugin;
 * From a zip package;
 * Through other plugins.
-
-
-Using Boundless Connect plugin
-..............................
-
-You can use the search feature of the `Boundless Connect panel <https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html#searching-plugins-and-other-resources>`_ to find, download and
-install lessons groups.
-
-Filter the search results by choosing ``Lessons`` in the :guilabel:`Search
-for` Drop-down menu.
-
-Type the name or subject of the lessons group you are seeking for (e.g.,
-``general``) and click :guilabel:`Search`. The list of matching lessons
-groups shows up. Click one of the listed items to install it in the
-:guilabel:`Lessons Library`.
-
-.. figure:: img/install_from_connect.png
-
-Once the download and installation finishes, a message in the top of
-the map canvas informs that **"lessons were correctly installed"**.
 
 From ZIP package
 ................
@@ -66,14 +45,18 @@ After it, the lessons in the ZIP package will become available in the
 
 .. figure:: img/install_from_zip.png
 
+   Install lessons from a zip package
+
 Through other plugins
 .....................
 
 Some plugins can automatically install new lessons. For example, upon
-installation of `Boundless's Geogig plugin <http://boundlessgeo.github.io/qgis-plugins-documentation/geogiglight/index.html>`_,
+installation of Boundless `Terrain Analysis plugin <https://connect.boundlessgeo.com/docs/desktop/plugins/terrainanalysis/>`_,
 a new group of lessons will become available in lessons library.
 
-.. figure:: img/geogig_lessons.png
+.. figure:: img/terrain_analysis_lessons.png
+
+   Terrain analysis plugin lessons
 
 Uninstall lessons
 -----------------
