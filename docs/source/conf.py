@@ -183,8 +183,6 @@ htmlhelp_basename = 'QGISLessonsPlugindoc'
 # Substitutions
 rst_epilog = """
 .. |BLQGIS| replace:: *Boundless Desktop*
-.. |current_plugin| replace:: *Lessons*
-.. |path_to_settings| replace:: :menuselection:`Plugins --> Lessons --> Plugin settings...`
 """
 
 # -- Options for LaTeX output ---------------------------------------------

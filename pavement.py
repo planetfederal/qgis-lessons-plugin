@@ -32,8 +32,9 @@ options(
             '*.pro',
             'ext_src',
         ],
+        path_to_settings = 'Plugins --> Lessons --> Plugin settings',
         # skip certain files inadvertently found by exclude pattern globbing
-        skip_exclude = []
+        skip_exclude = [],
     ),
     sphinx = Bunch(
         docroot = path('docs'),
@@ -285,10 +286,11 @@ def create_settings_docs(options):
     for setting in settings:
         grouped[setting["group"]].append(setting)
     with open (doc_file, "w") as f:
-        f.write(".. _plugin_settings:\n\n"
+        f.write(".. _{}_plugin_settings:\n\n"
                 "Plugin settings\n===============\n\n"
                 "The plugin can be adjusted using the following settings, "
-                "to be found in its settings dialog (|path_to_settings|).\n")
+                "to be found in its settings dialog "
+                "(:menuselection:`{}`).\n".format(options.plugin.name, options.plugin.path_to_settings))
         for groupName, group in grouped.items():
             section_marks = "-" * len(groupName)
             f.write("\n%s\n%s\n\n"
@@ -304,7 +306,6 @@ def create_settings_docs(options):
                 f.write("   * - %s\n"
                         "     - %s\n"
                         % (setting["label"], setting["description"]))
-
 
 @task
 @cmdopts([
