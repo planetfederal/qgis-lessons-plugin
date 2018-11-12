@@ -7,8 +7,10 @@
    :description: Lessons plugin Documentation
    :keywords: lessons plugin documentation, lessons plugin qgis, tutorials plugin, lessons
 
-Welcome to Lessons Documentation
-================================
+.. _lessons_docs:
+
+Lessons Documentation
+=====================
 
 *Lessons* is a plugin for QGIS to create and follow step-by-step lessons and tutorials within QGIS.
 
