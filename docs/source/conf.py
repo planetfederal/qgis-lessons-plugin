@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 # ones.
 extensions = ['sphinx.ext.autodoc']
 
-autodoc_mock_imports = ["qgiscommons2.settings"]
+autodoc_mock_imports = ["qgiscommons2.settings","qgis.PyQt.QtCore"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
